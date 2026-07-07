@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>umra.booking — Найдите отель для Умры и Хаджа</title>
+  <title>Umra.Booking — Найдите отель для Умры и Хаджа</title>
   <meta name="description" content="14 отелей в 7 городах Саудовской Аравии. Групповые и индивидуальные заявки. Ответ в течение 4 часов." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -54,6 +54,28 @@
       transition: color 0.2s;
     }
     .header-manager:hover { color: var(--white); }
+
+    /* LANGUAGE SWITCH */
+    .lang-switch {
+      display: flex; gap: 4px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 8px; padding: 3px;
+    }
+    .lang-btn {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 12px; font-weight: 700;
+      color: rgba(255,255,255,0.6);
+      background: none; border: none; border-radius: 6px;
+      padding: 5px 9px; cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .lang-btn:hover { color: rgba(255,255,255,0.9); }
+    .lang-btn.active { background: var(--gold); color: var(--blue-dark); }
+    .lang-switch--light { background: var(--bg); }
+    .lang-switch--light .lang-btn { color: var(--text-light); }
+    .lang-switch--light .lang-btn:hover { color: var(--blue); }
+    .lang-switch--light .lang-btn.active { background: var(--blue); color: var(--white); }
+
     .header-nav {
       background: rgba(0,0,0,0.2);
       border-top: 1px solid rgba(255,255,255,0.08);
@@ -61,19 +83,45 @@
     .header-nav-inner {
       max-width: 1100px; margin: 0 auto;
       padding: 0 20px;
-      display: flex; gap: 0; overflow-x: auto;
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 0;
     }
     .header-nav a {
       font-family: 'Montserrat', sans-serif;
       font-size: 13px; font-weight: 600;
       color: rgba(255,255,255,0.8);
       text-decoration: none;
-      padding: 10px 16px;
+      padding: 10px 8px;
       white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis;
       transition: color 0.2s;
-      display: flex; align-items: center; gap: 6px;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      text-align: center;
     }
     .header-nav a:hover { color: var(--white); }
+
+    /* ===== MOBILE: header-nav как сетка 2x2, текст переносится, не обрезается ===== */
+    @media (max-width: 640px) {
+      .header-nav-inner {
+        grid-template-columns: repeat(2, 1fr);
+        padding: 0 8px;
+      }
+      .header-nav a {
+        font-size: 11.5px;
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+        line-height: 1.25;
+        padding: 9px 4px;
+        gap: 4px;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+      }
+      .header-nav a:nth-child(odd) { border-right: 1px solid rgba(255,255,255,0.06); }
+      .header-nav a:nth-child(3), .header-nav a:nth-child(4) { border-bottom: none; }
+    }
+    @media (max-width: 360px) {
+      .header-nav a { font-size: 10.5px; }
+    }
 
     /* HERO */
     .hero {
@@ -87,7 +135,6 @@
       font-weight: 800; line-height: 1.2;
       margin-bottom: 12px;
     }
-    .hero-sub { font-size: 15px; opacity: 0.8; margin-bottom: 4px; }
     .hero-sub2 { font-size: 13px; opacity: 0.6; }
 
     /* SEARCH BOX */
@@ -124,12 +171,102 @@
       font-size: 15px; font-family: 'Open Sans', sans-serif;
       background: transparent; color: var(--text); cursor: pointer;
     }
+    /* ===== COMBINED DATE FIELD ===== */
+    .search-date-combined {
+      padding: 0; cursor: default; overflow: hidden;
+      display: flex; align-items: stretch;
+    }
+    .date-half {
+      flex: 1; position: relative;
+      display: flex; align-items: center; gap: 10px;
+      padding: 14px 16px; cursor: pointer;
+      transition: background 0.15s; min-width: 0;
+    }
+    .date-half:active { background: rgba(26,58,143,0.05); }
+    .date-half-icon {
+      font-size: 18px; flex-shrink: 0; line-height: 1;
+      color: var(--blue);
+    }
+    .date-half-body { flex: 1; min-width: 0; }
+    .date-half-label {
+      font-size: 11px; font-weight: 700; color: var(--text-light);
+      text-transform: uppercase; letter-spacing: 0.4px;
+      margin-bottom: 3px; white-space: nowrap;
+    }
+    .date-combined-divider {
+      width: 1px; background: var(--border);
+      margin: 10px 0; flex-shrink: 0; align-self: stretch;
+    }
+    /* date segments inside combined field */
+    .date-half .date-seg-wrap {
+      font-size: 14px; font-weight: 600;
+      display: flex; align-items: baseline; flex-wrap: nowrap;
+    }
+    .search-date-combined .search-date-native {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      opacity: 0; pointer-events: none;
+      border: none; padding: 0; margin: 0;
+    }
+
+    /* ===== MOBILE: дата — только тап открывает нативный календарь, без ручного ввода по сегментам ===== */
+    @media (max-width: 640px) {
+      .date-half .date-seg-wrap {
+        pointer-events: none; /* визуальный текст, клики не перехватывает */
+        cursor: pointer;
+        user-select: none;
+      }
+      .date-half .date-seg-wrap.focused .date-seg.active {
+        background: none; color: inherit; /* убираем визуальный "режим редактирования" на мобильном */
+      }
+      /* Сам нативный input растягиваем на всю плитку и делаем реально кликабельным —
+         так браузер на телефоне гарантированно открывает свой системный календарь
+         по тапу (надёжнее, чем программный showPicker()/click() из JS). */
+      .date-half {
+        cursor: pointer;
+      }
+      .date-half .search-date-native {
+        position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important;
+        display: block !important; /* iOS Safari игнорирует width:100% на input[type=date] без display:block */
+        opacity: 0 !important; pointer-events: auto !important;
+        border: none !important; padding: 0 !important; margin: 0 !important; cursor: pointer !important;
+        -webkit-appearance: none; appearance: none;
+        z-index: 2 !important;
+      }
+    }
+    /* OLD single-field date rules (kept for keyboard segments) */
+    .search-date-field { position: relative; }
+    .date-seg-wrap {
+      flex: 1; outline: none; cursor: text;
+      font-size: 15px; font-family: 'Open Sans', sans-serif;
+      color: var(--text); user-select: none;
+      display: flex; align-items: baseline;
+    }
+    .date-seg {
+      display: inline-block; border-radius: 4px;
+      padding: 1px 2px; transition: background 0.15s;
+    }
+    .date-seg.placeholder { color: var(--text-light); }
+    .date-seg-wrap.focused .date-seg.active {
+      background: rgba(26,58,143,0.12); color: var(--blue-dark);
+    }
+    .date-seg-dot { color: var(--text); margin: 0 1px; }
+    .search-date-icon-btn {
+      border: none; background: none; cursor: pointer;
+      font-size: 17px; line-height: 1; padding: 4px;
+      flex-shrink: 0; color: var(--text-light);
+    }
+    .search-date-field input[type="date"].search-date-native {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      opacity: 0; pointer-events: none;
+      border: none; padding: 0; margin: 0;
+    }
     .search-guests-display { flex: 1; }
     .search-guests-popup {
       display: none;
       background: var(--white); border-radius: 12px;
       padding: 16px; margin-bottom: 10px;
       box-shadow: var(--shadow);
+      position: relative; z-index: 10;
     }
     .search-guests-popup.open { display: block; }
     .guests-row {
@@ -153,6 +290,21 @@
       border: none; border-radius: 10px;
       font-family: 'Montserrat', sans-serif;
       font-size: 14px; font-weight: 700; cursor: pointer;
+    }
+    /* Housing type pills */
+    .housing-pills {
+      display: flex; gap: 8px; margin-bottom: 14px;
+    }
+    .housing-pill {
+      flex: 1; padding: 8px 4px; border-radius: 20px;
+      border: 1.5px solid var(--border); background: none;
+      font-family: 'Montserrat', sans-serif; font-size: 13px;
+      font-weight: 600; color: var(--text-mid); cursor: pointer;
+      transition: all 0.18s; text-align: center;
+    }
+    .housing-pill.active {
+      background: var(--blue); border-color: var(--blue);
+      color: white;
     }
     .search-btn {
       width: 100%; padding: 16px;
@@ -266,7 +418,6 @@
       font-weight: 800; font-size: 22px; color: var(--gold);
     }
     .stat-name { font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 2px; }
-    .stat-kaz { font-size: 10px; color: rgba(255,255,255,0.4); }
     .stats-partner {
       background: rgba(255,255,255,0.08);
       border-radius: 10px; padding: 10px 14px;
@@ -285,41 +436,64 @@
     .partners-title {
       font-family: 'Montserrat', sans-serif;
       font-weight: 800; font-size: 20px; color: var(--blue);
-      max-width: 700px; margin: 0 auto 14px; text-align: center;
+      max-width: 700px; margin: 0 auto 16px; text-align: center;
     }
-    .partners-grid {
+
+    /* City tabs */
+    .partners-city-tabs {
+      max-width: 700px; margin: 0 auto 16px;
+      display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+    }
+    .partner-city-tab {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 13px;
+      background: var(--white); color: var(--blue);
+      border: 1.5px solid var(--border); border-radius: 20px;
+      padding: 9px 16px; cursor: pointer;
+      transition: background 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .partner-city-tab:hover { border-color: var(--blue-mid); }
+    .partner-city-tab.active {
+      background: var(--blue); border-color: var(--blue); color: var(--white);
+      box-shadow: 0 4px 14px rgba(26,58,143,0.25);
+    }
+    .partner-city-tab-count { font-weight: 600; font-size: 12px; opacity: 0.7; }
+    .partner-city-tab.active .partner-city-tab-count { opacity: 0.85; }
+
+    .partners-all-grid {
       max-width: 700px; margin: 0 auto;
       display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;
     }
     .partner-card {
+      position: relative;
       background: var(--white); border-radius: var(--radius);
-      padding: 20px 16px; box-shadow: var(--shadow);
+      padding: 18px 14px; box-shadow: var(--shadow);
       text-align: center; border: 1.5px solid var(--border);
+      text-decoration: none; color: inherit; display: block;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
     }
-    .partner-icon { font-size: 36px; margin-bottom: 8px; }
-    .partner-name { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 14px; color: var(--blue); }
-    .partner-arabic { font-size: 12px; color: var(--text-light); margin: 4px 0; }
+    .partner-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--blue); box-shadow: 0 8px 20px rgba(26,58,143,0.16);
+    }
+    .partner-card.is-hidden { display: none; }
+    .partner-card-wide { grid-column: 1 / -1; }
+    .partner-icon {
+      width: 52px; height: 52px; margin: 0 auto 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px; border-radius: 14px;
+      background: linear-gradient(135deg, #eef1fc, #e2e8fb);
+    }
+    .partner-card-wide .partner-icon { background: linear-gradient(135deg, var(--gold-light), var(--gold)); }
+    .partner-name { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 14px; color: var(--blue); line-height: 1.25; }
+    .partner-arabic { font-size: 12px; color: var(--text-light); margin: 4px 0; direction: rtl; }
     .partner-badge {
       display: inline-block;
       background: #fff4d0; color: #b06000;
       font-size: 11px; font-weight: 600;
       padding: 3px 10px; border-radius: 20px; margin-top: 6px;
     }
-    .partners-row {
-      max-width: 700px; margin: 0 auto;
-      display: flex; gap: 10px; overflow-x: auto;
-    }
-    .partner-small {
-      background: var(--white); border-radius: 10px;
-      padding: 10px 14px; box-shadow: var(--shadow);
-      display: flex; align-items: center; gap: 8px;
-      white-space: nowrap; border: 1px solid var(--border);
-      flex-shrink: 0;
-    }
-    .partner-small-icon { font-size: 20px; }
-    .partner-small-info { }
-    .partner-small-name { font-size: 13px; font-weight: 600; }
-    .partner-small-arabic { font-size: 11px; color: var(--text-light); }
     .partners-note {
       max-width: 700px; margin: 12px auto 0;
       background: #f0f4ff; border-radius: 10px;
@@ -329,7 +503,6 @@
 
     /* FAQ */
     .faq-section { background: var(--bg); padding: 0 20px 24px; }
-    .faq-kaz { font-size: 13px; color: var(--text-light); max-width: 700px; margin: -8px auto 14px; }
     .faq-item {
       background: var(--white); border-radius: var(--radius);
       max-width: 700px; margin: 0 auto 8px;
@@ -342,7 +515,6 @@
     }
     .faq-q-text { }
     .faq-q-main { font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 14px; color: var(--blue); }
-    .faq-q-kaz { font-size: 12px; color: var(--text-light); margin-top: 2px; }
     .faq-chevron {
       width: 28px; height: 28px; border-radius: 50%;
       background: var(--bg); border: none; cursor: pointer;
@@ -416,6 +588,45 @@
     }
     .review-add:hover { background: var(--blue-mid); }
 
+    /* REVIEW MODAL */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 9000;
+      background: rgba(10,20,60,0.55); backdrop-filter: blur(3px);
+      justify-content: center; align-items: flex-end;
+      padding-bottom: 0;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-card {
+      background: var(--white); border-radius: 20px 20px 0 0;
+      width: 100%; max-width: 540px; max-height: 92vh;
+      overflow-y: auto; padding: 24px 20px 40px;
+      position: relative; box-shadow: 0 -4px 40px rgba(26,58,143,0.18);
+      animation: slideUp 0.25s ease;
+    }
+    @keyframes slideUp { from { transform: translateY(60px); opacity: 0; } to { transform: none; opacity: 1; } }
+    .modal-close {
+      position: absolute; top: 16px; right: 16px;
+      background: var(--bg); border: none; border-radius: 50%;
+      width: 32px; height: 32px; font-size: 16px; cursor: pointer;
+      color: var(--text-mid); line-height: 32px; text-align: center;
+    }
+    .modal-title {
+      font-family: 'Montserrat', sans-serif; font-weight: 700;
+      font-size: 20px; color: var(--blue-dark); margin-bottom: 20px;
+      padding-right: 40px;
+    }
+    /* Star ratings */
+    .rv-ratings { display: flex; flex-direction: column; gap: 10px; }
+    .rv-rating-row { display: flex; align-items: center; justify-content: space-between; }
+    .rv-cat-label { font-size: 14px; color: var(--text-mid); }
+    .rv-stars { display: flex; gap: 4px; }
+    .rv-star {
+      font-size: 28px; color: var(--border); cursor: pointer;
+      transition: color 0.15s; line-height: 1; user-select: none;
+    }
+    .rv-star.active { color: var(--gold); }
+    .rv-star:hover { color: var(--gold-light); }
+
     /* FOOTER */
     footer { background: var(--blue-dark); color: rgba(255,255,255,0.7); padding: 32px 20px; }
     .footer-inner { max-width: 700px; margin: 0 auto; }
@@ -463,7 +674,6 @@
       font-weight: 700; font-size: 13px; color: var(--blue);
       margin-bottom: 3px;
     }
-    .form-label-kaz { font-size: 11px; color: var(--text-light); margin-bottom: 7px; }
     .form-input, .form-select, .form-textarea {
       width: 100%; padding: 13px 16px;
       border: 1.5px solid var(--border);
@@ -562,6 +772,7 @@
     /* UTILS */
     .max700 { max-width: 700px; margin: 0 auto; }
     .section-gap { padding-top: 8px; }
+
   </style>
 </head>
 <body>
@@ -571,72 +782,115 @@
 
   <header>
     <div class="header-top">
-      <a href="#" class="logo" onclick="showPage('page-main')">umra<span>.booking</span></a>
-      <a href="#" class="header-manager" onclick="showPage('page-manager'); return false;">Для менеджеров</a>
+      <a href="#" class="logo" onclick="showPage('page-main')">Umra<span>.Booking</span></a>
+      <div class="lang-switch">
+        <button class="lang-btn" data-lang="ru" onclick="setLanguage('ru')">RU</button>
+        <button class="lang-btn" data-lang="kz" onclick="setLanguage('kz')">KZ</button>
+        <button class="lang-btn" data-lang="en" onclick="setLanguage('en')">EN</button>
+      </div>
+      <a href="#" class="header-manager" onclick="showPage('page-manager'); return false;" data-i18n="nav.manager_link">Для менеджеров</a>
     </div>
     <div class="header-nav">
       <div class="header-nav-inner">
-        <a href="#cities">🏨 Отели</a>
-        <a href="#" onclick="showPage('page-group'); return false;">👥 Групповые тур⭐</a>
-        <a href="#" onclick="showPage('page-individual'); return false;">🌍 Индивидуальн</a>
-        <a href="#cities">🏙 Города</a>
+        <a href="#cities">🏨 <span data-i18n="nav.hotels">Отели</span></a>
+        <a href="#" onclick="showPage('page-group'); return false;">👥 <span data-i18n="nav.group">Групповые туры</span></a>
+        <a href="#" onclick="showPage('page-individual'); return false;">🌍 <span data-i18n="nav.individual">Индивидуальные</span></a>
+        <a href="#cities">🏙 <span data-i18n="nav.cities">Города</span></a>
       </div>
     </div>
   </header>
 
   <!-- HERO -->
   <div class="hero">
-    <h1>Найдите отель для<br>Умры и Хаджа</h1>
-    <div class="hero-sub">Умра мен Қажылыққа арналған қонақүй</div>
-    <div class="hero-sub2">14 отелей в 7 городах Саудовской Аравии</div>
+    <h1><span data-i18n="hero.title_line1">Найдите отель для</span><br><span data-i18n="hero.title_line2">Умры и Хаджа</span></h1>
+    <div class="hero-sub2" data-i18n="hero.subtitle">14 отелей в 7 городах Саудовской Аравии</div>
   </div>
 
   <!-- SEARCH -->
   <div class="search-box">
     <div class="search-inner">
-      <div class="search-label">Куда едете?</div>
+      <div class="search-label" data-i18n="search.title">Куда едете?</div>
       <div class="search-field">
         <span>📍</span>
         <select id="search-city">
-          <option value="mecca">🕋 Мекка</option>
-          <option value="medina">🕌 Медина</option>
-          <option value="jeddah">🌊 Джидда</option>
-          <option value="riyadh">🏙 Эр-Рияд</option>
-          <option value="taif">🌹 Таиф</option>
-          <option value="abha">⛰️ Абха</option>
-          <option value="alula">🏛 Аль-Ула</option>
+          <option value="mecca" data-i18n="cities.mecca">🕋 Мекка</option>
+          <option value="medina" data-i18n="cities.medina">🕌 Медина</option>
+          <option value="jeddah" data-i18n="cities.jeddah">🌊 Джидда</option>
+          <option value="riyadh" data-i18n="cities.riyadh">🏙 Эр-Рияд</option>
+          <option value="taif" data-i18n="cities.taif">🌹 Таиф</option>
+          <option value="abha" data-i18n="cities.abha">⛰️ Абха</option>
+          <option value="alula" data-i18n="cities.alula">🏛 Аль-Ула</option>
         </select>
       </div>
 
-      <div class="search-label">Дата заезда</div>
-      <div class="search-field">
-        <input type="date" id="search-checkin" />
+      <div class="search-field search-date-combined">
+        <!-- Левая половина: Дата заезда -->
+        <div class="date-half" id="date-half-checkin" role="button" tabindex="0" aria-label="Дата заезда">
+          <span class="date-half-icon">📅</span>
+          <div class="date-half-body">
+            <div class="date-half-label" data-i18n="search.checkin">Дата заезда</div>
+            <div class="date-seg-wrap" id="search-checkin-wrap" tabindex="0">
+              <span class="date-seg date-seg-day" data-seg="day" data-key="checkin">00</span><span class="date-seg-dot">.</span><span class="date-seg date-seg-month" data-seg="month" data-key="checkin">00</span><span class="date-seg-dot">.</span><span class="date-seg date-seg-year" data-seg="year" data-key="checkin">2000</span>
+            </div>
+          </div>
+          <input type="date" class="search-date-native" id="search-checkin-native" />
+        </div>
+        <div class="date-combined-divider"></div>
+        <!-- Правая половина: Дата выезда -->
+        <div class="date-half" id="date-half-checkout" role="button" tabindex="0" aria-label="Дата выезда">
+          <span class="date-half-icon">📅</span>
+          <div class="date-half-body">
+            <div class="date-half-label" data-i18n="search.checkout">Дата выезда</div>
+            <div class="date-seg-wrap" id="search-checkout-wrap" tabindex="0">
+              <span class="date-seg date-seg-day" data-seg="day" data-key="checkout">00</span><span class="date-seg-dot">.</span><span class="date-seg date-seg-month" data-seg="month" data-key="checkout">00</span><span class="date-seg-dot">.</span><span class="date-seg date-seg-year" data-seg="year" data-key="checkout">2000</span>
+            </div>
+          </div>
+          <input type="date" class="search-date-native" id="search-checkout-native" />
+        </div>
       </div>
 
-      <div class="search-label">Дата выезда</div>
-      <div class="search-field">
-        <input type="date" id="search-checkout" />
-      </div>
-
-      <div class="search-label">Гости</div>
-      <div class="search-field" onclick="toggleGuests()">
+      <div class="search-label" data-i18n="search.guests">Гости</div>
+      <div class="search-field" id="guests-field" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false" aria-controls="guests-popup">
         <span>👥</span>
-        <div class="search-guests-display" id="guests-display">2 гостя · 7 ночей</div>
+        <div class="search-guests-display" id="guests-display">2 Гостя  1 Комната · 7 Ночей</div>
       </div>
       <div class="search-guests-popup" id="guests-popup">
+        <!-- Тип жилья -->
+        <div class="guests-label" style="margin-bottom:8px;" data-i18n="search.housing_type">Тип жилья</div>
+        <div class="housing-pills" id="housing-pills">
+          <button class="housing-pill active" data-housing="house" onclick="setHousing('house')" data-i18n="search.housing_house">Дом</button>
+          <button class="housing-pill" data-housing="villa" onclick="setHousing('villa')" data-i18n="search.housing_villa">Вилла</button>
+          <button class="housing-pill" data-housing="apartment" onclick="setHousing('apartment')" data-i18n="search.housing_apt">Квартира</button>
+        </div>
         <div class="guests-row">
-          <div class="guests-label">Взрослые</div>
+          <div class="guests-label" data-i18n="search.adults">Взрослые</div>
           <div class="guests-ctrl">
             <button class="guests-btn" onclick="changeGuests(-1)">−</button>
             <div class="guests-count" id="guests-count">2</div>
             <button class="guests-btn" onclick="changeGuests(1)">+</button>
           </div>
         </div>
-        <button class="guests-done" onclick="closeGuests()">Готово</button>
+        <div class="guests-row" id="rooms-row">
+          <div class="guests-label" data-i18n="search.rooms">Комнаты</div>
+          <div class="guests-ctrl">
+            <button class="guests-btn" onclick="changeRooms(-1)">−</button>
+            <div class="guests-count" id="rooms-count">1</div>
+            <button class="guests-btn" onclick="changeRooms(1)">+</button>
+          </div>
+        </div>
+        <div class="guests-row">
+          <div class="guests-label" data-i18n="search.days">Дни</div>
+          <div class="guests-ctrl">
+            <button class="guests-btn" onclick="changeDays(-1)">−</button>
+            <div class="guests-count" id="days-count">7</div>
+            <button class="guests-btn" onclick="changeDays(1)">+</button>
+          </div>
+        </div>
+        <button class="guests-done" onclick="closeGuests()" data-i18n="search.done">Готово</button>
       </div>
 
       <button class="search-btn" onclick="handleSearch()">
-        🔍 Найти
+        🔍 <span data-i18n="search.btn">Найти</span>
       </button>
     </div>
   </div>
@@ -647,29 +901,29 @@
       <div class="feature-card">
         <div class="feature-icon-box">✅</div>
         <div>
-          <div class="feature-title">Бронируй сейчас, плати в отеле</div>
-          <div class="feature-desc">Бесплатная отмена на большинстве номеров</div>
+          <div class="feature-title" data-i18n="features.f1_title">Бронируй сейчас, плати в отеле</div>
+          <div class="feature-desc" data-i18n="features.f1_desc">Бесплатная отмена на большинстве номеров</div>
         </div>
       </div>
       <div class="feature-card">
         <div class="feature-icon-box">⭐</div>
         <div>
-          <div class="feature-title">Реальные отзывы паломников</div>
-          <div class="feature-desc">Проверенные отзывы от наших клиентов</div>
+          <div class="feature-title" data-i18n="features.f2_title">Реальные отзывы паломников</div>
+          <div class="feature-desc" data-i18n="features.f2_desc">Проверенные отзывы от наших клиентов</div>
         </div>
       </div>
       <div class="feature-card">
         <div class="feature-icon-box">🏨</div>
         <div>
-          <div class="feature-title">14 отелей в 7 городах КСА</div>
-          <div class="feature-desc">Отели, апартаменты и VIP-резиденции</div>
+          <div class="feature-title" data-i18n="features.f3_title">14 отелей в 7 городах КСА</div>
+          <div class="feature-desc" data-i18n="features.f3_desc">Отели, апартаменты и VIP-резиденции</div>
         </div>
       </div>
       <div class="feature-card">
         <div class="feature-icon-box">💬</div>
         <div>
-          <div class="feature-title">Поддержка 24/7 в WhatsApp</div>
-          <div class="feature-desc">Менеджер всегда на связи</div>
+          <div class="feature-title" data-i18n="features.f4_title">Поддержка 24/7 в WhatsApp</div>
+          <div class="feature-desc" data-i18n="features.f4_desc">Менеджер всегда на связи</div>
         </div>
       </div>
     </div>
@@ -677,20 +931,20 @@
 
   <!-- REQUEST TYPES -->
   <div class="req-types">
-    <div class="req-types-title">Тип заявки</div>
+    <div class="req-types-title" data-i18n="reqtypes.title">Тип заявки</div>
     <a class="req-card" href="#" onclick="showPage('page-group'); return false;">
       <div class="req-icon-box req-icon-blue">👥</div>
       <div class="req-info">
-        <div class="req-name">Групповая заявка <span class="req-badge">От 10 человек</span></div>
-        <div class="req-desc">Топтық өтінім — для туристических агентств и организованных групп</div>
+        <div class="req-name"><span data-i18n="reqtypes.group_name">Групповая заявка</span> <span class="req-badge" data-i18n="reqtypes.group_badge">От 10 человек</span></div>
+        <div class="req-desc" data-i18n="reqtypes.group_desc">Для туристических агентств и организованных групп</div>
       </div>
       <div class="req-arrow">›</div>
     </a>
     <a class="req-card" href="#" onclick="showPage('page-individual'); return false;">
       <div class="req-icon-box req-icon-gold">👤</div>
       <div class="req-info">
-        <div class="req-name">Индивидуальная заявка <span class="req-badge req-badge-vip">VIP</span></div>
-        <div class="req-desc">Жеке өтінім — персональный сервис и VIP-обслуживание</div>
+        <div class="req-name"><span data-i18n="reqtypes.individual_name">Индивидуальная заявка</span> <span class="req-badge req-badge-vip" data-i18n="reqtypes.individual_badge">VIP</span></div>
+        <div class="req-desc" data-i18n="reqtypes.individual_desc">Жеке өтінім — персональный сервис и VIP-обслуживание</div>
       </div>
       <div class="req-arrow">›</div>
     </a>
@@ -698,48 +952,48 @@
 
   <!-- CITIES -->
   <div class="cities-section" id="cities">
-    <div class="section-title">Популярные направления</div>
+    <div class="section-title" data-i18n="cities.section_title">Популярные направления</div>
     <div class="cities-grid">
       <div class="city-card">
         <div class="city-img">🕋</div>
         <div class="city-info">
-          <div class="city-name">Мекка</div>
-          <div class="city-count">5 отелей</div>
+          <div class="city-name" data-i18n="cities.mecca">Мекка</div>
+          <div class="city-count" data-count="5">5 отелей</div>
         </div>
       </div>
       <div class="city-card">
         <div class="city-img">🕌</div>
         <div class="city-info">
-          <div class="city-name">Медина</div>
-          <div class="city-count">4 отеля</div>
+          <div class="city-name" data-i18n="cities.medina">Медина</div>
+          <div class="city-count" data-count="4">4 отеля</div>
         </div>
       </div>
       <div class="city-card">
         <div class="city-img">🌊</div>
         <div class="city-info">
-          <div class="city-name">Джидда</div>
-          <div class="city-count">2 отеля</div>
+          <div class="city-name" data-i18n="cities.jeddah">Джидда</div>
+          <div class="city-count" data-count="2">2 отеля</div>
         </div>
       </div>
       <div class="city-card">
         <div class="city-img">🏙</div>
         <div class="city-info">
-          <div class="city-name">Эр-Рияд</div>
-          <div class="city-count">1 отель</div>
+          <div class="city-name" data-i18n="cities.riyadh">Эр-Рияд</div>
+          <div class="city-count" data-count="1">1 отель</div>
         </div>
       </div>
       <div class="city-card">
         <div class="city-img">🌹</div>
         <div class="city-info">
-          <div class="city-name">Таиф</div>
-          <div class="city-count">1 отель</div>
+          <div class="city-name" data-i18n="cities.taif">Таиф</div>
+          <div class="city-count" data-count="1">1 отель</div>
         </div>
       </div>
       <div class="city-card">
         <div class="city-img">⛰️</div>
         <div class="city-info">
-          <div class="city-name">Абха</div>
-          <div class="city-count">1 отель</div>
+          <div class="city-name" data-i18n="cities.abha">Абха</div>
+          <div class="city-count" data-count="1">1 отель</div>
         </div>
       </div>
     </div>
@@ -748,171 +1002,194 @@
   <!-- STATS -->
   <div style="padding: 0 0 24px;">
     <div class="stats-block">
-      <div class="stats-header">НАМ ДОВЕРЯЮТ • БІЗГЕ СЕНЕДІ</div>
+      <div class="stats-header" data-i18n="stats.header">Нам доверяют</div>
       <div class="stats-grid">
         <div>
           <div class="stat-icon">🕌</div>
           <div class="stat-num">1 247+</div>
-          <div class="stat-name">Паломников</div>
-          <div class="stat-kaz">Қажылар</div>
+          <div class="stat-name" data-i18n="stats.pilgrims">Паломников</div>
         </div>
         <div>
           <div class="stat-icon">🏙</div>
           <div class="stat-num">7</div>
-          <div class="stat-name">Городов</div>
-          <div class="stat-kaz">Қала</div>
+          <div class="stat-name" data-i18n="stats.cities">Городов</div>
         </div>
         <div>
           <div class="stat-icon">⭐</div>
           <div class="stat-num">98%</div>
-          <div class="stat-name">Довольных</div>
-          <div class="stat-kaz">Қанағаттанған</div>
+          <div class="stat-name" data-i18n="stats.satisfied">Довольных</div>
         </div>
         <div>
           <div class="stat-icon">⚡</div>
           <div class="stat-num">4ч</div>
-          <div class="stat-name">Ответ</div>
-          <div class="stat-kaz">Жауап</div>
+          <div class="stat-name" data-i18n="stats.response">Ответ</div>
         </div>
       </div>
-      <div class="stats-partner">
-        📍 Официальный партнёр туроператоров КСА • КСА туроператорларының ресми серіктесі
-      </div>
+      <div class="stats-partner" data-i18n="stats.partner_line">📍 Официальный партнёр туроператоров КСА</div>
     </div>
   </div>
 
   <!-- PARTNERS -->
   <div class="partners-section">
-    <div class="partners-label">СЕРІКТЕС ҚОНАҚҮЙЛЕР • ОТЕЛИ-ПАРТНЁРЫ</div>
-    <div class="partners-title">Прямые контракты с отелями Мекки</div>
-    <div class="partners-grid">
-      <div class="partner-card">
+    <div class="partners-label" data-i18n="partners.label">Отели-партнёры</div>
+    <div class="partners-title" data-i18n="partners.title">Прямые контракты с отелями Мекки</div>
+
+    <div class="partners-city-tabs" id="partnersCityTabs">
+      <button type="button" class="partner-city-tab active" data-city="mecca" onclick="filterPartnersByCity('mecca', this)">
+        <span data-i18n="cities.mecca">🕋 Мекка</span><span class="partner-city-tab-count">(13)</span>
+      </button>
+    </div>
+
+    <div class="partners-all-grid" id="partnersGrid">
+      <a href="https://www.instagram.com/s/aGlnaGxpZ2h0OjE4MTExODc0NDgwNTQ5NTI3?story_media_id=3800598924273510610&igsh=MWhja2l5YjF5bzVnZg==" class="partner-card" data-city="mecca">
         <div class="partner-icon">🕌</div>
         <div class="partner-name">Emar Elite</div>
         <div class="partner-arabic">إعمار إيليت</div>
-        <span class="partner-badge">Приоритетный партнёр</span>
-      </div>
-      <div class="partner-card">
+        <span class="partner-badge" data-i18n="partners.badge">Приоритетный партнёр</span>
+      </a>
+      <a href="#" class="partner-card" data-city="mecca">
         <div class="partner-icon">🏨</div>
         <div class="partner-name">Nawazi Towers</div>
         <div class="partner-arabic">نوازي تاورز</div>
-        <span class="partner-badge">Приоритетный партнёр</span>
-      </div>
+        <span class="partner-badge" data-i18n="partners.badge">Приоритетный партнёр</span>
+      </a>
+      <a href="#" class="partner-card" data-city="mecca">
+        <div class="partner-icon">🏩</div>
+        <div class="partner-name">Sonood al Rayan</div>
+        <div class="partner-arabic">سنود الريان</div>
+      </a>
+      <a href="#" class="partner-card" data-city="mecca">
+        <div class="partner-icon">🏪</div>
+        <div class="partner-name">Arak Shariga Hotel</div>
+        <div class="partner-arabic">أراك شاريقة</div>
+      </a>
+      <a href="#" class="partner-card" data-city="mecca">
+        <div class="partner-icon">🏛</div>
+        <div class="partner-name">Al Olayan Grand</div>
+        <div class="partner-arabic">العليان جراند</div>
+      </a>
+      <a href="#" class="partner-card" data-city="mecca">
+        <div class="partner-icon">🌙</div>
+        <div class="partner-name">Shurfa Talaeg Hotel</div>
+        <div class="partner-arabic">شرفة الطلائع</div>
+      </a>
+      <a href="#" class="partner-card" data-city="mecca">
+        <div class="partner-icon">⭐</div>
+        <div class="partner-name">Ramada Hotel</div>
+        <div class="partner-arabic">رمادا مكة</div>
+      </a>
+      <a href="#" class="partner-card" data-city="mecca">
+        <div class="partner-icon">🏙</div>
+        <div class="partner-name">Courtyard Hotel</div>
+        <div class="partner-arabic">كورتيارد مكة</div>
+      </a>
+      <a href="#" class="partner-card" data-city="mecca">
+        <div class="partner-icon">🏢</div>
+        <div class="partner-name">Qira Hotel</div>
+        <div class="partner-arabic">فندق قرى</div>
+      </a>
+      <a href="#" class="partner-card" data-city="mecca">
+        <div class="partner-icon">🌅</div>
+        <div class="partner-name">Fajr Badeg Hotel</div>
+        <div class="partner-arabic">الفجر البديعة</div>
+      </a>
+      <a href="#" class="partner-card" data-city="mecca">
+        <div class="partner-icon">🏰</div>
+        <div class="partner-name">Address Hotel</div>
+        <div class="partner-arabic">عنوان جبل عمر</div>
+      </a>
+      <a href="#" class="partner-card" data-city="mecca">
+        <div class="partner-icon">🗼</div>
+        <div class="partner-name">Kudi Towers</div>
+        <div class="partner-arabic">كدي تاور</div>
+      </a>
+      <a href="#" class="partner-card partner-card-wide" data-city="mecca">
+        <div class="partner-icon">🕋</div>
+        <div class="partner-name">Al Noor Hotel</div>
+        <div class="partner-arabic">فندق النور</div>
+      </a>
     </div>
-    <div class="partners-row">
-      <div class="partner-small">
-        <div class="partner-small-icon">🏩</div>
-        <div class="partner-small-info">
-          <div class="partner-small-name">Sonood al Rayan</div>
-          <div class="partner-small-arabic">سنود الريان</div>
-        </div>
-      </div>
-      <div class="partner-small">
-        <div class="partner-small-icon">🏪</div>
-        <div class="partner-small-info">
-          <div class="partner-small-name">Arak Shariga Hotels</div>
-          <div class="partner-small-arabic">أراك شاريقة</div>
-        </div>
-      </div>
-      <div class="partner-small">
-        <div class="partner-small-icon">🕋</div>
-        <div class="partner-small-info">
-          <div class="partner-small-name">Al Noor Hotel</div>
-          <div class="partner-small-arabic">فندق النور</div>
-        </div>
-      </div>
-    </div>
-    <div class="partners-note max700">
-      🛡 Прямые договоры — без посредников. Лучшие цены и гарантированное заселение.
-    </div>
+    <div class="partners-note max700" data-i18n="partners.note">🛡 Прямые договоры — без посредников. Лучшие цены и гарантированное заселение.</div>
   </div>
 
   <!-- FAQ -->
   <div class="faq-section">
-    <div class="section-title max700">Часто задаваемые вопросы</div>
-    <div class="faq-kaz">Жиі қойылатын сұрақтар</div>
+    <div class="section-title max700" data-i18n="faq.section_title">Часто задаваемые вопросы</div>
 
     <div class="faq-item">
       <div class="faq-q" onclick="toggleFaq(this)">
         <div class="faq-q-text">
-          <div class="faq-q-main">Как подать заявку?</div>
-          <div class="faq-q-kaz">Өтінімді қалай беруге болады?</div>
+          <div class="faq-q-main" data-i18n="faq.q1">Как подать заявку?</div>
         </div>
         <button class="faq-chevron">▾</button>
       </div>
-      <div class="faq-a">Выберите тип заявки — Групповая (от 10 чел.) или Индивидуальная. Заполните форму и нажмите "Отправить заявку". Наш менеджер свяжется с вами в WhatsApp в течение 4 часов.</div>
+      <div class="faq-a" data-i18n="faq.a1">Выберите тип заявки — Групповая (от 10 чел.) или Индивидуальная. Заполните форму и нажмите "Отправить заявку". Наш менеджер свяжется с вами в WhatsApp в течение 4 часов.</div>
     </div>
 
     <div class="faq-item">
       <div class="faq-q" onclick="toggleFaq(this)">
         <div class="faq-q-text">
-          <div class="faq-q-main">Сколько стоит бронирование?</div>
-          <div class="faq-q-kaz">Бронь қанша тұрады?</div>
+          <div class="faq-q-main" data-i18n="faq.q2">Сколько стоит бронирование?</div>
         </div>
         <button class="faq-chevron">▾</button>
       </div>
-      <div class="faq-a">Сервис подбора отелей бесплатный. Стоимость зависит от выбранного отеля, категории номера, дат и количества человек. Точную цену менеджер сообщит после обработки заявки.</div>
+      <div class="faq-a" data-i18n="faq.a2">Сервис подбора отелей бесплатный. Стоимость зависит от выбранного отеля, категории номера, дат и количества человек. Точную цену менеджер сообщит после обработки заявки.</div>
     </div>
 
     <div class="faq-item">
       <div class="faq-q" onclick="toggleFaq(this)">
         <div class="faq-q-text">
-          <div class="faq-q-main">Какие документы нужны для поездки?</div>
-          <div class="faq-q-kaz">Саяхат үшін қандай құжаттар қажет?</div>
+          <div class="faq-q-main" data-i18n="faq.q3">Какие документы нужны для поездки?</div>
         </div>
         <button class="faq-chevron">▾</button>
       </div>
-      <div class="faq-a">Для въезда в Саудовскую Аравию нужны: действующий паспорт (не менее 6 мес.), виза умра или туристическая виза, подтверждение бронирования отеля.</div>
+      <div class="faq-a" data-i18n="faq.a3">Для въезда в Саудовскую Аравию нужны: действующий паспорт (не менее 6 мес.), виза умра или туристическая виза, подтверждение бронирования отеля.</div>
     </div>
 
     <div class="faq-item">
       <div class="faq-q" onclick="toggleFaq(this)">
         <div class="faq-q-text">
-          <div class="faq-q-main">Можно ли отменить или изменить заявку?</div>
-          <div class="faq-q-kaz">Өтінімді болдырмауға немесе өзгертуге болады ма?</div>
+          <div class="faq-q-main" data-i18n="faq.q4">Можно ли отменить или изменить заявку?</div>
         </div>
         <button class="faq-chevron">▾</button>
       </div>
-      <div class="faq-a">Да, большинство наших отелей предоставляют бесплатную отмену. Условия зависят от конкретного отеля и тарифа. Свяжитесь с менеджером для изменения заявки.</div>
+      <div class="faq-a" data-i18n="faq.a4">Да, большинство наших отелей предоставляют бесплатную отмену. Условия зависят от конкретного отеля и тарифа. Свяжитесь с менеджером для изменения заявки.</div>
     </div>
 
     <div class="faq-item">
       <div class="faq-q" onclick="toggleFaq(this)">
         <div class="faq-q-text">
-          <div class="faq-q-main">Как долго обрабатывается заявка?</div>
-          <div class="faq-q-kaz">Өтінімді өңдеу қанша уақыт алады?</div>
+          <div class="faq-q-main" data-i18n="faq.q5">Как долго обрабатывается заявка?</div>
         </div>
         <button class="faq-chevron">▾</button>
       </div>
-      <div class="faq-a">Менеджер отвечает в течение 4 часов в рабочее время. В горячий сезон (Рамадан, Хадж) время ответа может быть немного больше.</div>
+      <div class="faq-a" data-i18n="faq.a5">Менеджер отвечает в течение 4 часов в рабочее время. В горячий сезон (Рамадан, Хадж) время ответа может быть немного больше.</div>
     </div>
 
     <div class="faq-item">
       <div class="faq-q" onclick="toggleFaq(this)">
         <div class="faq-q-text">
-          <div class="faq-q-main">Есть ли минимальное количество человек для групповой заявки?</div>
-          <div class="faq-q-kaz">Топтық өтінім үшін ең аз адам саны бар ма?</div>
+          <div class="faq-q-main" data-i18n="faq.q6">Есть ли минимальное количество человек для групповой заявки?</div>
         </div>
         <button class="faq-chevron">▾</button>
       </div>
-      <div class="faq-a">Да, для групповой заявки минимум 10 человек. Для меньшего количества рекомендуем индивидуальную заявку с VIP-сервисом.</div>
+      <div class="faq-a" data-i18n="faq.a6">Да, для групповой заявки минимум 10 человек. Для меньшего количества рекомендуем индивидуальную заявку с VIP-сервисом.</div>
     </div>
 
     <div class="faq-item">
       <div class="faq-q" onclick="toggleFaq(this)">
         <div class="faq-q-text">
-          <div class="faq-q-main">В каких городах вы работаете?</div>
-          <div class="faq-q-kaz">Сіздер қандай қалаларда жұмыс істейсіздер?</div>
+          <div class="faq-q-main" data-i18n="faq.q7">В каких городах вы работаете?</div>
         </div>
         <button class="faq-chevron">▾</button>
       </div>
-      <div class="faq-a">Мекка, Медина, Джидда, Эр-Рияд, Таиф, Абха, Аль-Ула — 7 городов Саудовской Аравии.</div>
+      <div class="faq-a" data-i18n="faq.a7">Мекка, Медина, Джидда, Эр-Рияд, Таиф, Абха, Аль-Ула — 7 городов Саудовской Аравии.</div>
     </div>
 
     <div class="faq-wa">
-      <div class="faq-wa-text">Не нашли ответ? • Жауап таппадыңыз ба?</div>
+      <div class="faq-wa-text" data-i18n="faq.not_found">Не нашли ответ?</div>
       <a href="https://wa.me/966559301590" class="faq-wa-link" target="_blank">
-        💬 Написать в WhatsApp
+        <span data-i18n="common.whatsapp_btn">💬 Написать в WhatsApp</span>
       </a>
     </div>
   </div>
@@ -921,8 +1198,8 @@
   <div class="reviews-section">
     <div class="reviews-header">
       <div class="reviews-title-block">
-        <div class="reviews-title">Отзывы клиентов</div>
-        <div class="reviews-kaz">Пікірлер • Реальные впечатления наших клиентов</div>
+        <div class="reviews-title" data-i18n="reviews.title">Отзывы клиентов</div>
+        <div class="reviews-kaz" data-i18n="reviews.subtitle">Реальные впечатления наших клиентов</div>
       </div>
       <div class="reviews-rating">⭐ 4.7 (3)</div>
     </div>
@@ -932,18 +1209,18 @@
         <div class="review-author">
           <div class="review-avatar" style="background:#2e7d32;">АС</div>
           <div>
-            <div class="review-name">Айгерим С.</div>
-            <div class="review-meta">🏙 Мекка <span>15 февраля 2026</span></div>
+            <div class="review-name" data-i18n="reviews.r1_name">Айгерим С.</div>
+            <div class="review-meta">🏙 <span data-i18n="cities.mecca">Мекка</span> <span data-i18n="reviews.r1_date">15 февраля 2026</span></div>
           </div>
         </div>
         <div class="review-star">⭐ 4.8</div>
       </div>
-      <div class="review-text">"Всё было организовано на высшем уровне. Отель близко к Масджид аль-Харам, гид очень внимательный и знающий. Рекомендую всем!"</div>
+      <div class="review-text" data-i18n="reviews.r1_text">"Всё было организовано на высшем уровне. Отель близко к Масджид аль-Харам, гид очень внимательный и знающий. Рекомендую всем!"</div>
       <div class="review-cats">
-        <div class="review-cat"><div class="review-cat-name">🏨 Отель</div><div class="stars">★★★★★</div></div>
-        <div class="review-cat"><div class="review-cat-name">🧭 Гид</div><div class="stars">★★★★★</div></div>
-        <div class="review-cat"><div class="review-cat-name">📋 Организация</div><div class="stars">★★★★★</div></div>
-        <div class="review-cat"><div class="review-cat-name">🍽 Питание</div><div class="stars">★★★★☆</div></div>
+        <div class="review-cat"><div class="review-cat-name">🏨 <span data-i18n="reviews.cat_hotel">Отель</span></div><div class="stars">★★★★★</div></div>
+        <div class="review-cat"><div class="review-cat-name">🧭 <span data-i18n="reviews.cat_guide">Гид</span></div><div class="stars">★★★★★</div></div>
+        <div class="review-cat"><div class="review-cat-name">📋 <span data-i18n="reviews.cat_org">Организация</span></div><div class="stars">★★★★★</div></div>
+        <div class="review-cat"><div class="review-cat-name">🍽 <span data-i18n="reviews.cat_food">Питание</span></div><div class="stars">★★★★☆</div></div>
       </div>
     </div>
 
@@ -952,18 +1229,18 @@
         <div class="review-author">
           <div class="review-avatar" style="background:#6d4c41;">НК</div>
           <div>
-            <div class="review-name">Нурлан К.</div>
-            <div class="review-meta">🏙 Медина <span>3 февраля 2026</span></div>
+            <div class="review-name" data-i18n="reviews.r2_name">Нурлан К.</div>
+            <div class="review-meta">🏙 <span data-i18n="cities.medina">Медина</span> <span data-i18n="reviews.r2_date">3 февраля 2026</span></div>
           </div>
         </div>
         <div class="review-star">⭐ 4.5</div>
       </div>
-      <div class="review-text">"Отличная поездка. Медина встретила нас теплом. Организация заслуживает высокой оценки, всё по расписанию."</div>
+      <div class="review-text" data-i18n="reviews.r2_text">"Отличная поездка. Медина встретила нас теплом. Организация заслуживает высокой оценки, всё по расписанию."</div>
       <div class="review-cats">
-        <div class="review-cat"><div class="review-cat-name">🏨 Отель</div><div class="stars">★★★★☆</div></div>
-        <div class="review-cat"><div class="review-cat-name">🧭 Гид</div><div class="stars">★★★★★</div></div>
-        <div class="review-cat"><div class="review-cat-name">📋 Организация</div><div class="stars">★★★★★</div></div>
-        <div class="review-cat"><div class="review-cat-name">🍽 Питание</div><div class="stars">★★★★☆</div></div>
+        <div class="review-cat"><div class="review-cat-name">🏨 <span data-i18n="reviews.cat_hotel">Отель</span></div><div class="stars">★★★★☆</div></div>
+        <div class="review-cat"><div class="review-cat-name">🧭 <span data-i18n="reviews.cat_guide">Гид</span></div><div class="stars">★★★★★</div></div>
+        <div class="review-cat"><div class="review-cat-name">📋 <span data-i18n="reviews.cat_org">Организация</span></div><div class="stars">★★★★★</div></div>
+        <div class="review-cat"><div class="review-cat-name">🍽 <span data-i18n="reviews.cat_food">Питание</span></div><div class="stars">★★★★☆</div></div>
       </div>
     </div>
 
@@ -972,39 +1249,124 @@
         <div class="review-author">
           <div class="review-avatar" style="background:#4a148c;">ЗМ</div>
           <div>
-            <div class="review-name">Зарина М.</div>
-            <div class="review-meta">🏙 Джидда <span>20 января 2026</span></div>
+            <div class="review-name" data-i18n="reviews.r3_name">Зарина М.</div>
+            <div class="review-meta">🏙 <span data-i18n="cities.jeddah">Джидда</span> <span data-i18n="reviews.r3_date">20 января 2026</span></div>
           </div>
         </div>
         <div class="review-star">⭐ 4.3</div>
       </div>
-      <div class="review-text">"Джидда — удивительный город. Программа была насыщенной, гид рассказывал интересно. Питание могло быть лучше, но в целом всё отлично."</div>
+      <div class="review-text" data-i18n="reviews.r3_text">"Джидда — удивительный город. Программа была насыщенной, гид рассказывал интересно. Питание могло быть лучше, но в целом всё отлично."</div>
       <div class="review-cats">
-        <div class="review-cat"><div class="review-cat-name">🏨 Отель</div><div class="stars">★★★★★</div></div>
-        <div class="review-cat"><div class="review-cat-name">🧭 Гид</div><div class="stars">★★★★★</div></div>
-        <div class="review-cat"><div class="review-cat-name">📋 Организация</div><div class="stars">★★★★☆</div></div>
-        <div class="review-cat"><div class="review-cat-name">🍽 Питание</div><div class="stars">★★★☆☆</div></div>
+        <div class="review-cat"><div class="review-cat-name">🏨 <span data-i18n="reviews.cat_hotel">Отель</span></div><div class="stars">★★★★★</div></div>
+        <div class="review-cat"><div class="review-cat-name">🧭 <span data-i18n="reviews.cat_guide">Гид</span></div><div class="stars">★★★★★</div></div>
+        <div class="review-cat"><div class="review-cat-name">📋 <span data-i18n="reviews.cat_org">Организация</span></div><div class="stars">★★★★☆</div></div>
+        <div class="review-cat"><div class="review-cat-name">🍽 <span data-i18n="reviews.cat_food">Питание</span></div><div class="stars">★★★☆☆</div></div>
       </div>
     </div>
 
-    <button class="review-add" onclick="alert('Функция скоро будет доступна!')">+ Оставить отзыв • Пікір қалдыру</button>
+    <button class="review-add" onclick="openReviewModal()"><span data-i18n="reviews.add_btn">+ Оставить отзыв</span></button>
   </div>
 
   <!-- FOOTER -->
+  <!-- REVIEW MODAL -->
+  <div id="review-modal" class="modal-overlay" onclick="closeReviewModal(event)">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeReviewModal()" data-i18n="review_form.close">✕</button>
+      <div id="review-modal-form">
+        <div class="modal-title" data-i18n="review_form.title">Оставить отзыв</div>
+
+        <!-- Honeypot (невидимое поле для ботов) -->
+        <input type="text" id="review-hp" style="display:none" tabindex="-1" autocomplete="off" />
+
+        <div class="form-group">
+          <div class="form-label" data-i18n="review_form.field_name">Ваше имя *</div>
+          <input class="form-input" type="text" id="rv-name" data-i18n-placeholder="review_form.field_name_ph" placeholder="Как вас зовут" required />
+        </div>
+        <div class="form-group">
+          <div class="form-label" data-i18n="review_form.field_city">Город посещения *</div>
+          <select class="form-select" id="rv-city" required>
+            <option value="" data-i18n="review_form.select_city">— Выберите город —</option>
+            <option data-i18n="cities.mecca">Мекка</option>
+            <option data-i18n="cities.medina">Медина</option>
+            <option data-i18n="cities.jeddah">Джидда</option>
+            <option data-i18n="cities.riyadh">Эр-Рияд</option>
+            <option data-i18n="cities.taif">Таиф</option>
+            <option data-i18n="cities.abha">Абха</option>
+            <option data-i18n="cities.alula">Аль-Ула</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <div class="form-label" data-i18n="review_form.field_date">Месяц и год поездки *</div>
+          <input class="form-input" type="text" id="rv-date" data-i18n-placeholder="review_form.date_ph" placeholder="Например: Март 2026" required />
+        </div>
+
+        <div class="form-group">
+          <div class="form-label" data-i18n="review_form.ratings_title">Оценки (1–5 ⭐)</div>
+          <div class="rv-ratings">
+            <div class="rv-rating-row">
+              <span class="rv-cat-label" data-i18n="review_form.cat_hotel">🏨 Отель</span>
+              <div class="rv-stars" data-cat="hotel">
+                <span class="rv-star" data-v="1">★</span><span class="rv-star" data-v="2">★</span><span class="rv-star" data-v="3">★</span><span class="rv-star" data-v="4">★</span><span class="rv-star" data-v="5">★</span>
+              </div>
+            </div>
+            <div class="rv-rating-row">
+              <span class="rv-cat-label" data-i18n="review_form.cat_org">📋 Организация</span>
+              <div class="rv-stars" data-cat="org">
+                <span class="rv-star" data-v="1">★</span><span class="rv-star" data-v="2">★</span><span class="rv-star" data-v="3">★</span><span class="rv-star" data-v="4">★</span><span class="rv-star" data-v="5">★</span>
+              </div>
+            </div>
+            <div class="rv-rating-row">
+              <span class="rv-cat-label" data-i18n="review_form.cat_guide">🧭 Гид</span>
+              <div class="rv-stars" data-cat="guide">
+                <span class="rv-star" data-v="1">★</span><span class="rv-star" data-v="2">★</span><span class="rv-star" data-v="3">★</span><span class="rv-star" data-v="4">★</span><span class="rv-star" data-v="5">★</span>
+              </div>
+            </div>
+            <div class="rv-rating-row">
+              <span class="rv-cat-label" data-i18n="review_form.cat_food">🍽 Питание</span>
+              <div class="rv-stars" data-cat="food">
+                <span class="rv-star" data-v="1">★</span><span class="rv-star" data-v="2">★</span><span class="rv-star" data-v="3">★</span><span class="rv-star" data-v="4">★</span><span class="rv-star" data-v="5">★</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-label" data-i18n="review_form.field_text">Текст отзыва *</div>
+          <textarea class="form-textarea" id="rv-text" data-i18n-placeholder="review_form.text_ph" placeholder="Расскажите о своей поездке..." rows="4" required></textarea>
+        </div>
+        <div class="form-group">
+          <div class="form-label" data-i18n="review_form.field_contact">Контакт (телефон/email)</div>
+          <input class="form-input" type="text" id="rv-contact" data-i18n-placeholder="review_form.contact_ph" placeholder="Необязательно" />
+        </div>
+        <div class="form-checkbox">
+          <input type="checkbox" id="rv-agree" required />
+          <label class="form-checkbox-label" for="rv-agree" data-i18n="review_form.agree">Разрешаю опубликовать отзыв на сайте</label>
+        </div>
+        <div class="rv-error" id="rv-error" style="display:none;color:#c0392b;font-size:13px;margin-bottom:8px;"></div>
+        <button class="form-submit" id="rv-submit-btn" onclick="submitReview()" data-i18n="review_form.submit">Отправить отзыв</button>
+      </div>
+      <div id="review-modal-success" style="display:none;text-align:center;padding:32px 0;">
+        <div style="font-size:48px;margin-bottom:16px;">🌟</div>
+        <div class="form-success-title" data-i18n="review_form.success_title">Спасибо за отзыв!</div>
+        <div class="form-success-text" data-i18n="review_form.success_text">Мы проверим его и опубликуем на сайте.</div>
+      </div>
+    </div>
+  </div>
+
   <footer>
     <div class="footer-inner">
       <div class="footer-logo">umra<span>.booking</span></div>
-      <div class="footer-desc">Отель брондау • Бронирование отелей в Саудовской Аравии</div>
+      <div class="footer-desc" data-i18n="footer.desc">Бронирование отелей в Саудовской Аравии</div>
       <div class="footer-links">
-        <a href="#cities" class="footer-link">Города</a>
-        <a href="#" class="footer-link" onclick="showPage('page-manager'); return false;">Менеджерам</a>
-        <a href="#" class="footer-link">Оферта</a>
-        <a href="#" class="footer-link">Конфиденциальность</a>
+        <a href="#cities" class="footer-link" data-i18n="nav.cities">Города</a>
+        <a href="#" class="footer-link" onclick="showPage('page-manager'); return false;" data-i18n="footer.manager">Менеджерам</a>
+        <a href="#" class="footer-link" data-i18n="footer.offer">Оферта</a>
+        <a href="#" class="footer-link" data-i18n="footer.privacy">Конфиденциальность</a>
         <a href="https://alma-ceo.com" class="footer-link" target="_blank">alma-ceo.com</a>
       </div>
       <div class="footer-copy">
-        © 2026 umra.booking — ТОО «AlmaCEO», БИН: 220540013361 |
-        <a href="#">Оферта</a> | <a href="#">Политика конфиденциальности</a>
+        <span data-i18n="footer.legal_line">© 2026 umra.booking — ТОО «AlmaCEO», БИН: 220540013361</span> |
+        <a href="#" data-i18n="footer.offer">Оферта</a> | <a href="#" data-i18n="footer.privacy">Конфиденциальность</a>
       </div>
     </div>
   </footer>
@@ -1015,12 +1377,12 @@
 <!-- ========== GROUP FORM PAGE ========== -->
 <div id="page-group" class="page">
   <div class="form-page-header">
-    <button class="back-btn" onclick="showPage('page-main')">← Назад • Артқа</button>
+    <button class="back-btn" onclick="showPage('page-main')" data-i18n="common.back">← Назад</button>
     <div class="form-page-title-row">
       <div class="form-page-icon">📍</div>
       <div>
         <div class="form-page-brand">umra<span>.booking</span></div>
-        <div class="form-page-h1">Групповая заявка • Топтық өтінім</div>
+        <div class="form-page-h1" data-i18n="form.group_title">Групповая заявка</div>
       </div>
     </div>
   </div>
@@ -1030,101 +1392,99 @@
       <div id="group-form-content">
         <form id="groupForm" onsubmit="submitGroupForm(event)">
           <div class="form-group">
-            <div class="form-label">Название турагентства *</div>
-            <div class="form-label-kaz">Туристік агенттіктің атауы</div>
-            <input class="form-input" type="text" placeholder="Например: Alfa Travel" required />
+            <div class="form-label" data-i18n="form.field_agency">Название турагентства *</div>
+            <input class="form-input" type="text" data-i18n-placeholder="form.field_agency_ph" placeholder="Например: Alfa Travel" required />
           </div>
           <div class="form-group">
-            <div class="form-label">Контактное лицо *</div>
-            <div class="form-label-kaz">Байланыс тұлғасы</div>
-            <input class="form-input" type="text" placeholder="Имя и фамилия" required />
+            <div class="form-label" data-i18n="form.field_contact">Контактное лицо *</div>
+            <input class="form-input" type="text" data-i18n-placeholder="form.field_name_ph" placeholder="Имя и фамилия" required />
           </div>
           <div class="form-group">
-            <div class="form-label">Номер телефона *</div>
-            <div class="form-label-kaz">Телефон нөмірі</div>
-            <input class="form-input" type="tel" placeholder="+7 / +966 / +998..." required />
+            <div class="form-label" data-i18n="form.field_phone">Номер телефона *</div>
+            <input class="form-input" type="tel" data-i18n-placeholder="form.field_phone_ph" placeholder="+7 / +966 / +998..." required />
           </div>
           <div class="form-group">
-            <div class="form-label">Email</div>
-            <div class="form-label-kaz">Электрондық пошта</div>
-            <input class="form-input" type="email" placeholder="example@mail.com" />
+            <div class="form-label" data-i18n="form.field_email">Email</div>
+            <input class="form-input" type="email" data-i18n-placeholder="form.field_email_ph" placeholder="example@mail.com" />
           </div>
           <div class="form-group">
-            <div class="form-label">Город / Направление *</div>
-            <div class="form-label-kaz">Қала / Бағыт</div>
+            <div class="form-label" data-i18n="form.field_city">Город / Направление *</div>
             <select class="form-select" required>
-              <option value="">— Выберите город —</option>
-              <option>Мекка</option>
-              <option>Медина</option>
-              <option>Джидда</option>
-              <option>Эр-Рияд</option>
-              <option>Таиф</option>
-              <option>Абха</option>
-              <option>Аль-Ула</option>
+              <option value="" data-i18n="search.select_city">— Выберите город —</option>
+              <option data-i18n="cities.mecca">Мекка</option>
+              <option data-i18n="cities.medina">Медина</option>
+              <option data-i18n="cities.jeddah">Джидда</option>
+              <option data-i18n="cities.riyadh">Эр-Рияд</option>
+              <option data-i18n="cities.taif">Таиф</option>
+              <option data-i18n="cities.abha">Абха</option>
+              <option data-i18n="cities.alula">Аль-Ула</option>
             </select>
           </div>
           <div class="form-group">
-            <div class="form-label">Дата заезда *</div>
-            <div class="form-label-kaz">Келу күні</div>
+            <div class="form-label" data-i18n="form.field_checkin">Дата заезда *</div>
             <input class="form-input" type="date" required />
           </div>
           <div class="form-group">
-            <div class="form-label">Дата выезда *</div>
-            <div class="form-label-kaz">Кету күні</div>
+            <div class="form-label" data-i18n="form.field_checkout">Дата выезда *</div>
             <input class="form-input" type="date" required />
           </div>
           <div class="form-group">
-            <div class="form-label">Количество человек *</div>
-            <div class="form-label-kaz">Адам саны</div>
-            <input class="form-input" type="number" placeholder="Минимум 10 человек" min="10" required />
+            <div class="form-label" data-i18n="form.field_people">Количество человек *</div>
+            <input class="form-input" type="number" data-i18n-placeholder="form.field_people_ph" placeholder="Минимум 10 человек" min="10" required />
           </div>
           <div class="form-group">
-            <div class="form-label">Предпочитаемый отель</div>
-            <div class="form-label-kaz">Қалаулы қонақ үй</div>
-            <input class="form-input" type="text" placeholder="Название отеля или категория (3★, 4★, 5★)" />
-          </div>
-          <div class="form-group">
-            <div class="form-label">Питание *</div>
-            <div class="form-label-kaz">Тамақтану</div>
+            <div class="form-label" data-i18n="form.field_acc_type">Тип размещения *</div>
             <select class="form-select" required>
-              <option value="">— Выберите тип питания —</option>
-              <option>Без питания</option>
-              <option>Завтрак включён</option>
-              <option>Завтрак и ужин</option>
-              <option>Полный пансион</option>
+              <option value="" data-i18n="form.acc_select">— Выберите тип —</option>
+              <option value="Single" data-i18n="form.acc_single">Single — Одноместный</option>
+              <option value="Double" data-i18n="form.acc_double">Double — Двухместный</option>
+              <option value="Triple" data-i18n="form.acc_triple">Triple — Трёхместный</option>
+              <option value="Quad" data-i18n="form.acc_quad">Quad — Четырёхместный</option>
             </select>
           </div>
           <div class="form-group">
-            <div class="form-label">Дополнительные пожелания</div>
-            <div class="form-label-kaz">Қосымша тілектер</div>
-            <textarea class="form-textarea" placeholder="Особые требования, пожелания по транспорту, программе..."></textarea>
+            <div class="form-label" data-i18n="form.field_hotel_pref">Предпочитаемый отель</div>
+            <input class="form-input" type="text" data-i18n-placeholder="form.field_hotel_pref_ph" placeholder="Название отеля или категория (3★, 4★, 5★)" />
           </div>
           <div class="form-group">
-            <div class="form-label">Сумма к оплате (₸)</div>
-            <div class="form-label-kaz">Төлем сомасы</div>
+            <div class="form-label" data-i18n="form.field_food">Питание *</div>
+            <select class="form-select" required>
+              <option value="" data-i18n="form.select_food">— Выберите тип питания —</option>
+              <option data-i18n="form.food_none">Без питания</option>
+              <option data-i18n="form.food_breakfast">Завтрак включён</option>
+              <option data-i18n="form.food_half_board">Завтрак и ужин</option>
+              <option data-i18n="form.food_full_board">Полный пансион</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <div class="form-label" data-i18n="form.field_wishes">Дополнительные пожелания</div>
+            <textarea class="form-textarea" data-i18n-placeholder="form.field_wishes_group_ph" placeholder="Особые требования, пожелания по транспорту, программе..."></textarea>
+          </div>
+          <div class="form-group">
+            <div class="form-label" data-i18n="form.field_amount">Сумма к оплате (₸)</div>
             <div class="form-input-suffix">
-              <input class="form-input" type="number" placeholder="Например: 500000" />
+              <input class="form-input" type="number" data-i18n-placeholder="form.field_amount_group_ph" placeholder="Например: 500000" />
               <span class="form-input-suffix-icon">₸</span>
             </div>
-            <div class="form-hint">Необязательно — оставьте пустым если сумма ещё не известна</div>
+            <div class="form-hint" data-i18n="form.amount_hint">Необязательно — оставьте пустым если сумма ещё не известна</div>
           </div>
           <div class="form-checkbox">
             <input type="checkbox" required id="group-agree" />
             <label class="form-checkbox-label" for="group-agree">
-              Я принимаю условия <a href="#">публичной оферты</a> и <a href="#">политики конфиденциальности</a>
+              <span data-i18n="common.agree_prefix">Я принимаю условия</span> <a href="#" data-i18n="common.agree_offer">публичной оферты</a> <span data-i18n="common.agree_and">и</span> <a href="#" data-i18n="common.agree_privacy">политики конфиденциальности</a>
             </label>
           </div>
-          <button type="submit" class="form-submit">Отправить заявку • Өтінімді жіберу</button>
-          <div class="form-submit-note">Заявка автоматически поступит к ответственному менеджеру</div>
+          <button type="submit" class="form-submit" data-i18n="common.submit">Отправить заявку</button>
+          <div class="form-submit-note" data-i18n="form.submit_note">Заявка автоматически поступит к ответственному менеджеру</div>
         </form>
       </div>
       <div class="form-success" id="group-success">
         <div class="form-success-icon">✅</div>
-        <div class="form-success-title">Заявка отправлена!</div>
-        <div class="form-success-text">Менеджер свяжется с вами в WhatsApp в течение 4 часов. Также ждите письмо на email.</div>
-        <a href="https://wa.me/966559301590" class="form-success-wa" target="_blank">💬 Написать в WhatsApp</a>
+        <div class="form-success-title" data-i18n="form.success_title">Заявка отправлена!</div>
+        <div class="form-success-text" data-i18n="form.success_text">Менеджер свяжется с вами в WhatsApp в течение 4 часов. Также ждите письмо на email.</div>
+        <a href="https://wa.me/966559301590" class="form-success-wa" target="_blank" data-i18n="common.whatsapp_btn">💬 Написать в WhatsApp</a>
         <br><br>
-        <button onclick="showPage('page-main')" style="background:none;border:none;color:var(--blue);cursor:pointer;font-size:14px;">← Вернуться на главную</button>
+        <button onclick="showPage('page-main')" style="background:none;border:none;color:var(--blue);cursor:pointer;font-size:14px;" data-i18n="common.back_home">← Вернуться на главную</button>
       </div>
     </div>
   </div>
@@ -1134,12 +1494,12 @@
 <!-- ========== INDIVIDUAL FORM PAGE ========== -->
 <div id="page-individual" class="page">
   <div class="form-page-header">
-    <button class="back-btn" onclick="showPage('page-main')">← Назад • Артқа</button>
+    <button class="back-btn" onclick="showPage('page-main')" data-i18n="common.back">← Назад</button>
     <div class="form-page-title-row">
       <div class="form-page-icon">📍</div>
       <div>
         <div class="form-page-brand">umra<span>.booking</span></div>
-        <div class="form-page-h1">Индивидуальная заявка • Жеке өтінім</div>
+        <div class="form-page-h1" data-i18n="form.individual_title">Индивидуальная заявка</div>
       </div>
     </div>
   </div>
@@ -1149,107 +1509,95 @@
       <div id="individual-form-content">
         <form id="individualForm" onsubmit="submitIndividualForm(event)">
           <div class="form-group">
-            <div class="form-label">Имя и фамилия *</div>
-            <div class="form-label-kaz">Аты-жөні</div>
-            <input class="form-input" type="text" placeholder="Имя и фамилия" required />
+            <div class="form-label" data-i18n="form.field_fullname">Имя и фамилия *</div>
+            <input class="form-input" type="text" data-i18n-placeholder="form.field_name_ph" placeholder="Имя и фамилия" required />
           </div>
           <div class="form-group">
-            <div class="form-label">Номер телефона *</div>
-            <div class="form-label-kaz">Телефон нөмірі</div>
-            <input class="form-input" type="tel" placeholder="+7 / +966 / +998..." required />
+            <div class="form-label" data-i18n="form.field_phone">Номер телефона *</div>
+            <input class="form-input" type="tel" data-i18n-placeholder="form.field_phone_ph" placeholder="+7 / +966 / +998..." required />
           </div>
           <div class="form-group">
-            <div class="form-label">Email</div>
-            <div class="form-label-kaz">Электрондық пошта</div>
-            <input class="form-input" type="email" placeholder="example@mail.com" />
+            <div class="form-label" data-i18n="form.field_email">Email</div>
+            <input class="form-input" type="email" data-i18n-placeholder="form.field_email_ph" placeholder="example@mail.com" />
           </div>
           <div class="form-group">
-            <div class="form-label">Город / Направление *</div>
-            <div class="form-label-kaz">Қала / Бағыт</div>
+            <div class="form-label" data-i18n="form.field_city">Город / Направление *</div>
             <select class="form-select" required>
-              <option value="">— Выберите город —</option>
-              <option>Мекка</option>
-              <option>Медина</option>
-              <option>Джидда</option>
-              <option>Эр-Рияд</option>
-              <option>Таиф</option>
-              <option>Абха</option>
-              <option>Аль-Ула</option>
+              <option value="" data-i18n="search.select_city">— Выберите город —</option>
+              <option data-i18n="cities.mecca">Мекка</option>
+              <option data-i18n="cities.medina">Медина</option>
+              <option data-i18n="cities.jeddah">Джидда</option>
+              <option data-i18n="cities.riyadh">Эр-Рияд</option>
+              <option data-i18n="cities.taif">Таиф</option>
+              <option data-i18n="cities.abha">Абха</option>
+              <option data-i18n="cities.alula">Аль-Ула</option>
             </select>
           </div>
           <div class="form-group">
-            <div class="form-label">Дата заезда *</div>
-            <div class="form-label-kaz">Келу күні</div>
+            <div class="form-label" data-i18n="form.field_checkin">Дата заезда *</div>
             <input class="form-input" type="date" required />
           </div>
           <div class="form-group">
-            <div class="form-label">Дата выезда *</div>
-            <div class="form-label-kaz">Кету күні</div>
+            <div class="form-label" data-i18n="form.field_checkout">Дата выезда *</div>
             <input class="form-input" type="date" required />
           </div>
           <div class="form-group">
-            <div class="form-label">Количество комнат *</div>
-            <div class="form-label-kaz">Бөлме саны</div>
-            <input class="form-input" type="number" placeholder="1–9 комнат" min="1" max="9" required />
+            <div class="form-label" data-i18n="form.field_rooms">Количество комнат *</div>
+            <input class="form-input" type="number" data-i18n-placeholder="form.field_rooms_ph" placeholder="1–9 комнат" min="1" max="9" required />
           </div>
           <div class="form-group">
-            <div class="form-label">Тип номера</div>
-            <div class="form-label-kaz">Бөлме түрі</div>
-            <select class="form-select">
-              <option value="">— Выберите —</option>
-              <option>Стандарт</option>
-              <option>Делюкс</option>
-              <option>Люкс</option>
-              <option>VIP Suite</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <div class="form-label">Предпочитаемый отель</div>
-            <div class="form-label-kaz">Қалаулы қонақ үй</div>
-            <input class="form-input" type="text" placeholder="Название отеля или категория (3★, 4★, 5★)" />
-          </div>
-          <div class="form-group">
-            <div class="form-label">Питание *</div>
-            <div class="form-label-kaz">Тамақтану</div>
+            <div class="form-label" data-i18n="form.field_acc_type">Тип размещения *</div>
             <select class="form-select" required>
-              <option value="">— Выберите тип питания —</option>
-              <option>Без питания</option>
-              <option>Завтрак включён</option>
-              <option>Завтрак и ужин</option>
-              <option>Полный пансион</option>
+              <option value="" data-i18n="form.acc_select">— Выберите тип —</option>
+              <option value="Single" data-i18n="form.acc_single">Single — Одноместный</option>
+              <option value="Double" data-i18n="form.acc_double">Double — Двухместный</option>
+              <option value="Triple" data-i18n="form.acc_triple">Triple — Трёхместный</option>
+              <option value="Quad" data-i18n="form.acc_quad">Quad — Четырёхместный</option>
             </select>
           </div>
           <div class="form-group">
-            <div class="form-label">Дополнительные пожелания</div>
-            <div class="form-label-kaz">Қосымша тілектер</div>
-            <textarea class="form-textarea" placeholder="VIP пожелания, трансфер, экскурсии, особые требования..."></textarea>
+            <div class="form-label" data-i18n="form.field_hotel_pref">Предпочитаемый отель</div>
+            <input class="form-input" type="text" data-i18n-placeholder="form.field_hotel_pref_ph" placeholder="Название отеля или категория (3★, 4★, 5★)" />
           </div>
           <div class="form-group">
-            <div class="form-label">Сумма к оплате (₸)</div>
-            <div class="form-label-kaz">Төлем сомасы</div>
+            <div class="form-label" data-i18n="form.field_food">Питание *</div>
+            <select class="form-select" required>
+              <option value="" data-i18n="form.select_food">— Выберите тип питания —</option>
+              <option data-i18n="form.food_none">Без питания</option>
+              <option data-i18n="form.food_breakfast">Завтрак включён</option>
+              <option data-i18n="form.food_half_board">Завтрак и ужин</option>
+              <option data-i18n="form.food_full_board">Полный пансион</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <div class="form-label" data-i18n="form.field_wishes">Дополнительные пожелания</div>
+            <textarea class="form-textarea" data-i18n-placeholder="form.field_wishes_individual_ph" placeholder="VIP пожелания, трансфер, экскурсии, особые требования..."></textarea>
+          </div>
+          <div class="form-group">
+            <div class="form-label" data-i18n="form.field_amount">Сумма к оплате (₸)</div>
             <div class="form-input-suffix">
-              <input class="form-input" type="number" placeholder="Например: 250000" />
+              <input class="form-input" type="number" data-i18n-placeholder="form.field_amount_individual_ph" placeholder="Например: 250000" />
               <span class="form-input-suffix-icon">₸</span>
             </div>
-            <div class="form-hint">Необязательно — оставьте пустым если сумма ещё не известна</div>
+            <div class="form-hint" data-i18n="form.amount_hint">Необязательно — оставьте пустым если сумма ещё не известна</div>
           </div>
           <div class="form-checkbox">
             <input type="checkbox" required id="ind-agree" />
             <label class="form-checkbox-label" for="ind-agree">
-              Я принимаю условия <a href="#">публичной оферты</a> и <a href="#">политики конфиденциальности</a>
+              <span data-i18n="common.agree_prefix">Я принимаю условия</span> <a href="#" data-i18n="common.agree_offer">публичной оферты</a> <span data-i18n="common.agree_and">и</span> <a href="#" data-i18n="common.agree_privacy">политики конфиденциальности</a>
             </label>
           </div>
-          <button type="submit" class="form-submit">Отправить заявку • Өтінімді жіберу</button>
-          <div class="form-submit-note">Заявка автоматически поступит к ответственному менеджеру</div>
+          <button type="submit" class="form-submit" data-i18n="common.submit">Отправить заявку</button>
+          <div class="form-submit-note" data-i18n="form.submit_note">Заявка автоматически поступит к ответственному менеджеру</div>
         </form>
       </div>
       <div class="form-success" id="individual-success">
         <div class="form-success-icon">✅</div>
-        <div class="form-success-title">Заявка отправлена!</div>
-        <div class="form-success-text">Менеджер свяжется с вами в WhatsApp в течение 4 часов. Также ждите письмо на email.</div>
-        <a href="https://wa.me/966559301590" class="form-success-wa" target="_blank">💬 Написать в WhatsApp</a>
+        <div class="form-success-title" data-i18n="form.success_title">Заявка отправлена!</div>
+        <div class="form-success-text" data-i18n="form.success_text">Менеджер свяжется с вами в WhatsApp в течение 4 часов. Также ждите письмо на email.</div>
+        <a href="https://wa.me/966559301590" class="form-success-wa" target="_blank" data-i18n="common.whatsapp_btn">💬 Написать в WhatsApp</a>
         <br><br>
-        <button onclick="showPage('page-main')" style="background:none;border:none;color:var(--blue);cursor:pointer;font-size:14px;">← Вернуться на главную</button>
+        <button onclick="showPage('page-main')" style="background:none;border:none;color:var(--blue);cursor:pointer;font-size:14px;" data-i18n="common.back_home">← Вернуться на главную</button>
       </div>
     </div>
   </div>
@@ -1260,20 +1608,816 @@
 <div id="page-manager" class="page">
   <div class="manager-page">
     <div class="manager-card">
+      <div class="lang-switch lang-switch--light" style="justify-content:center; margin-bottom:16px;">
+        <button class="lang-btn" data-lang="ru" onclick="setLanguage('ru')">RU</button>
+        <button class="lang-btn" data-lang="kz" onclick="setLanguage('kz')">KZ</button>
+        <button class="lang-btn" data-lang="en" onclick="setLanguage('en')">EN</button>
+      </div>
       <div class="manager-icon">📍</div>
       <div class="manager-brand">umra<span>.booking</span></div>
-      <div class="manager-sub">Панель менеджера</div>
-      <div class="manager-label">Пароль доступа</div>
-      <div class="manager-error" id="manager-error">Неверный пароль</div>
-      <input class="manager-input" type="password" id="manager-pass" placeholder="Введите пароль" onkeydown="if(event.key==='Enter')managerLogin()" />
-      <button class="manager-btn" onclick="managerLogin()">Войти</button>
-      <a href="#" class="manager-back" onclick="showPage('page-main'); return false;">← Вернуться на главную</a>
+      <div class="manager-sub" data-i18n="manager.title">Панель менеджера</div>
+      <div class="manager-label" data-i18n="manager.password_label">Пароль доступа</div>
+      <div class="manager-error" id="manager-error" data-i18n="manager.error">Неверный пароль</div>
+      <input class="manager-input" type="password" id="manager-pass" data-i18n-placeholder="manager.password_ph" placeholder="Введите пароль" onkeydown="if(event.key==='Enter')managerLogin()" />
+      <button class="manager-btn" onclick="managerLogin()" data-i18n="manager.login_btn">Войти</button>
+      <a href="#" class="manager-back" onclick="showPage('page-main'); return false;" data-i18n="common.back_home">← Вернуться на главную</a>
     </div>
   </div>
 </div><!-- /page-manager -->
 
 
 <script>
+/* eslint-env browser */
+/* global document, window, localStorage */
+
+/* ==========================================================
+   i18n.js — словарь переводов (ru / kz / en) + движок переключения
+   Каждый текстовый узел в index.html помечен атрибутом data-i18n="ключ"
+   (или data-i18n-placeholder="ключ" для плейсхолдеров инпутов).
+   ВНИМАНИЕ: переводы kz и en сделаны мной (Claude) и не вычитаны
+   носителем языка — особенно термины умры/хаджа в kz-версии
+   стоит показать арабисту/носителю перед публикацией.
+   ========================================================== */
+
+const translations = {
+  ru: {
+    // NAV
+    "nav.hotels": "Отели",
+    "nav.group": "Групповые туры",
+    "nav.individual": "Индивидуальные",
+    "nav.cities": "Города",
+    "nav.manager_link": "Для менеджеров",
+
+    // HERO
+    "hero.title_line1": "Найдите отель для",
+    "hero.title_line2": "Умры и Хаджа",
+    "hero.subtitle": "14 отелей в 7 городах Саудовской Аравии",
+
+    // SEARCH
+    "search.title": "Куда едете?",
+    "search.checkin": "Дата заезда",
+    "search.checkout": "Дата выезда",
+    "search.guests": "Гости",
+    "search.adults": "Взрослые",
+    "search.rooms": "Комнаты",
+    "search.days": "Дни",
+    "search.month_ph": "месяц",
+    "search.done": "Готово",
+    "search.btn": "Найти",
+    "search.select_city": "— Выберите город —",
+    "search.housing_type": "Тип жилья",
+    "search.housing_house": "Дом",
+    "search.housing_villa": "Вилла",
+    "search.housing_apt": "Квартира",
+
+    // CITIES (общие названия — используются в селектах, карточках, FAQ)
+    "cities.mecca": "Мекка",
+    "cities.medina": "Медина",
+    "cities.jeddah": "Джидда",
+    "cities.riyadh": "Эр-Рияд",
+    "cities.taif": "Таиф",
+    "cities.abha": "Абха",
+    "cities.alula": "Аль-Ула",
+    "cities.section_title": "Популярные направления",
+
+    // FEATURES
+    "features.f1_title": "Бронируй сейчас, плати в отеле",
+    "features.f1_desc": "Бесплатная отмена на большинстве номеров",
+    "features.f2_title": "Реальные отзывы паломников",
+    "features.f2_desc": "Проверенные отзывы от наших клиентов",
+    "features.f3_title": "14 отелей в 7 городах КСА",
+    "features.f3_desc": "Отели, апартаменты и VIP-резиденции",
+    "features.f4_title": "Поддержка 24/7 в WhatsApp",
+    "features.f4_desc": "Менеджер всегда на связи",
+
+    // REQUEST TYPES
+    "reqtypes.title": "Тип заявки",
+    "reqtypes.group_name": "Групповая заявка",
+    "reqtypes.group_badge": "От 10 человек",
+    "reqtypes.group_desc": "Для туристических агентств и организованных групп",
+    "reqtypes.individual_name": "Индивидуальная заявка",
+    "reqtypes.individual_badge": "VIP",
+    "reqtypes.individual_desc": "Персональный сервис и VIP-обслуживание",
+
+    // STATS
+    "stats.header": "Нам доверяют",
+    "stats.pilgrims": "Паломников",
+    "stats.cities": "Городов",
+    "stats.satisfied": "Довольных",
+    "stats.response": "Ответ",
+    "stats.partner_line": "📍 Официальный партнёр туроператоров КСА",
+
+    // PARTNERS
+    "partners.label": "Отели-партнёры",
+    "partners.title": "Прямые контракты с отелями Мекки",
+    "partners.badge": "Приоритетный партнёр",
+    "partners.note": "🛡 Прямые договоры — без посредников. Лучшие цены и гарантированное заселение.",
+
+    // FAQ
+    "faq.section_title": "Часто задаваемые вопросы",
+    "faq.q1": "Как подать заявку?",
+    "faq.a1": "Выберите тип заявки — Групповая (от 10 чел.) или Индивидуальная. Заполните форму и нажмите «Отправить заявку». Наш менеджер свяжется с вами в WhatsApp в течение 4 часов.",
+    "faq.q2": "Сколько стоит бронирование?",
+    "faq.a2": "Сервис подбора отелей бесплатный. Стоимость зависит от выбранного отеля, категории номера, дат и количества человек. Точную цену менеджер сообщит после обработки заявки.",
+    "faq.q3": "Какие документы нужны для поездки?",
+    "faq.a3": "Для въезда в Саудовскую Аравию нужны: действующий паспорт (не менее 6 мес.), виза умра или туристическая виза, подтверждение бронирования отеля.",
+    "faq.q4": "Можно ли отменить или изменить заявку?",
+    "faq.a4": "Да, большинство наших отелей предоставляют бесплатную отмену. Условия зависят от конкретного отеля и тарифа. Свяжитесь с менеджером для изменения заявки.",
+    "faq.q5": "Как долго обрабатывается заявка?",
+    "faq.a5": "Менеджер отвечает в течение 4 часов в рабочее время. В горячий сезон (Рамадан, Хадж) время ответа может быть немного больше.",
+    "faq.q6": "Есть ли минимальное количество человек для групповой заявки?",
+    "faq.a6": "Да, для групповой заявки минимум 10 человек. Для меньшего количества рекомендуем индивидуальную заявку с VIP-сервисом.",
+    "faq.q7": "В каких городах вы работаете?",
+    "faq.a7": "Мекка, Медина, Джидда, Эр-Рияд, Таиф, Абха, Аль-Ула — 7 городов Саудовской Аравии.",
+    "faq.not_found": "Не нашли ответ?",
+
+    // REVIEWS
+    "reviews.title": "Отзывы клиентов",
+    "reviews.subtitle": "Реальные впечатления наших клиентов",
+    "reviews.add_btn": "+ Оставить отзыв",
+    "reviews.cat_hotel": "Отель",
+    "reviews.cat_guide": "Гид",
+    "reviews.cat_org": "Организация",
+    "reviews.cat_food": "Питание",
+    "reviews.r1_name": "Айгерим С.",
+    "reviews.r1_date": "15 февраля 2026",
+    "reviews.r1_text": "«Всё было организовано на высшем уровне. Отель близко к Масджид аль-Харам, гид очень внимательный и знающий. Рекомендую всем!»",
+    "reviews.r2_name": "Нурлан К.",
+    "reviews.r2_date": "3 февраля 2026",
+    "reviews.r2_text": "«Отличная поездка. Медина встретила нас теплом. Организация заслуживает высокой оценки, всё по расписанию.»",
+    "reviews.r3_name": "Зарина М.",
+    "reviews.r3_date": "20 января 2026",
+    "reviews.r3_text": "«Джидда — удивительный город. Программа была насыщенной, гид рассказывал интересно. Питание могло быть лучше, но в целом всё отлично.»",
+
+    // FOOTER
+    "footer.desc": "Бронирование отелей в Саудовской Аравии",
+    "footer.manager": "Менеджерам",
+    "footer.offer": "Оферта",
+    "footer.privacy": "Конфиденциальность",
+    "footer.legal_line": "© 2026 umra.booking — ТОО «AlmaCEO», БИН: 220540013361",
+
+    // COMMON
+    "common.back": "← Назад",
+    "common.back_home": "← Вернуться на главную",
+    "common.submit": "Отправить заявку",
+    "common.whatsapp_btn": "💬 Написать в WhatsApp",
+    "common.sending": "Отправляем...",
+    "common.agree_prefix": "Я принимаю условия",
+    "common.agree_offer": "публичной оферты",
+    "common.agree_and": "и",
+    "common.agree_privacy": "политики конфиденциальности",
+
+    // FORMS
+    "form.group_title": "Групповая заявка",
+    "form.individual_title": "Индивидуальная заявка",
+    "form.field_agency": "Название турагентства *",
+    "form.field_agency_ph": "Например: Alfa Travel",
+    "form.field_contact": "Контактное лицо *",
+    "form.field_fullname": "Имя и фамилия *",
+    "form.field_name_ph": "Имя и фамилия",
+    "form.field_phone": "Номер телефона *",
+    "form.field_phone_ph": "+7 / +966 / +998...",
+    "form.field_email": "Email",
+    "form.field_email_ph": "example@mail.com",
+    "form.field_city": "Город / Направление *",
+    "form.field_checkin": "Дата заезда *",
+    "form.field_checkout": "Дата выезда *",
+    "form.field_people": "Количество человек *",
+    "form.field_people_ph": "Минимум 10 человек",
+    "form.field_rooms": "Количество комнат *",
+    "form.field_rooms_ph": "1–9 комнат",
+    "form.field_roomtype": "Тип номера",
+    "form.select_generic": "— Выберите —",
+    "form.roomtype_standard": "Стандарт",
+    "form.roomtype_deluxe": "Делюкс",
+    "form.roomtype_lux": "Люкс",
+    "form.roomtype_vip": "VIP Suite",
+    "form.field_hotel_pref": "Предпочитаемый отель",
+    "form.field_hotel_pref_ph": "Название отеля или категория (3★, 4★, 5★)",
+    "form.field_food": "Питание *",
+    "form.select_food": "— Выберите тип питания —",
+    "form.food_none": "Без питания",
+    "form.food_breakfast": "Завтрак включён",
+    "form.food_half_board": "Завтрак и ужин",
+    "form.food_full_board": "Полный пансион",
+    "form.field_wishes": "Дополнительные пожелания",
+    "form.field_wishes_group_ph": "Особые требования, пожелания по транспорту, программе...",
+    "form.field_wishes_individual_ph": "VIP пожелания, трансфер, экскурсии, особые требования...",
+    "form.field_amount": "Сумма к оплате (₸)",
+    "form.field_amount_group_ph": "Например: 500000",
+    "form.field_amount_individual_ph": "Например: 250000",
+    "form.amount_hint": "Необязательно — оставьте пустым если сумма ещё не известна",
+    "form.submit_note": "Заявка автоматически поступит к ответственному менеджеру",
+    "form.success_title": "Заявка отправлена!",
+    "form.success_text": "Менеджер свяжется с вами в WhatsApp в течение 4 часов. Также ждите письмо на email.",
+
+    // MANAGER
+    "manager.title": "Панель менеджера",
+    "manager.password_label": "Пароль доступа",
+    "manager.error": "Неверный пароль",
+    "manager.password_ph": "Введите пароль",
+    "manager.login_btn": "Войти",
+
+    // JS-strings (alerts, WhatsApp-сообщения)
+    "js.search_need_dates": "Пожалуйста, выберите даты заезда и выезда",
+    "js.wa_greeting": "Здравствуйте! Хочу найти отель:",
+    "js.wa_city": "🏙 Город",
+    "js.wa_checkin": "📅 Заезд",
+    "js.wa_checkout": "📅 Выезд",
+    "js.wa_guests": "👥 Гостей",
+    "js.wa_new_request": "🕋 *Новая {type} заявка — umra.booking*",
+    "js.wa_type_group": "групповая",
+    "js.wa_type_individual": "индивидуальная",
+    "js.wa_sent_from": "_Отправлено с сайта umrabooking.kz_",
+    "js.manager_welcome": "Добро пожаловать! Панель менеджера в разработке.",
+    "js.review_soon": "Функция скоро будет доступна!",
+
+    // REVIEW FORM (modal)
+    "review_form.title": "Оставить отзыв",
+    "review_form.field_name": "Ваше имя *",
+    "review_form.field_name_ph": "Как вас зовут",
+    "review_form.field_city": "Город посещения *",
+    "review_form.select_city": "— Выберите город —",
+    "review_form.field_date": "Месяц и год поездки *",
+    "review_form.date_ph": "Например: Март 2026",
+    "review_form.ratings_title": "Оценки (1–5 ⭐)",
+    "review_form.cat_hotel": "🏨 Отель",
+    "review_form.cat_org": "📋 Организация",
+    "review_form.cat_guide": "🧭 Гид",
+    "review_form.cat_food": "🍽 Питание",
+    "review_form.field_text": "Текст отзыва *",
+    "review_form.text_ph": "Расскажите о своей поездке...",
+    "review_form.field_contact": "Контакт (телефон/email)",
+    "review_form.contact_ph": "Необязательно",
+    "review_form.agree": "Разрешаю опубликовать отзыв на сайте",
+    "review_form.submit": "Отправить отзыв",
+    "review_form.sending": "Отправляем...",
+    "review_form.close": "✕",
+    "review_form.wa_header": "🌟 Новый отзыв — umra.booking",
+    "review_form.wa_name": "Имя",
+    "review_form.wa_city": "Город",
+    "review_form.wa_date": "Дата поездки",
+    "review_form.wa_ratings": "Оценки",
+    "review_form.wa_text": "Отзыв",
+    "review_form.wa_contact": "Контакт",
+    "review_form.wa_consent": "Согласие на публикацию: ДА",
+    "review_form.success_title": "Спасибо за отзыв!",
+    "review_form.success_text": "Мы проверим его и опубликуем на сайте.",
+
+    // ACCOMMODATION TYPE (Single/Double/Triple/Quad)
+    "form.field_acc_type": "Тип размещения *",
+    "form.acc_select": "— Выберите тип —",
+    "form.acc_single": "Single — Одноместный",
+    "form.acc_double": "Double — Двухместный",
+    "form.acc_triple": "Triple — Трёхместный",
+    "form.acc_quad": "Quad — Четырёхместный",
+  },
+
+  kz: {
+    "nav.hotels": "Қонақүйлер",
+    "nav.group": "Топтық турлар",
+    "nav.individual": "Жеке турлар",
+    "nav.cities": "Қалалар",
+    "nav.manager_link": "Менеджерлерге",
+
+    "hero.title_line1": "Умра мен Қажылыққа",
+    "hero.title_line2": "арналған қонақүй табыңыз",
+    "hero.subtitle": "Сауд Арабиясының 7 қаласындағы 14 қонақүй",
+
+    "search.title": "Қайда барасыз?",
+    "search.checkin": "Келу күні",
+    "search.checkout": "Кету күні",
+    "search.guests": "Қонақтар",
+    "search.adults": "Ересектер",
+    "search.rooms": "Бөлмелер",
+    "search.days": "Күндер",
+    "search.month_ph": "ай",
+    "search.done": "Дайын",
+    "search.btn": "Іздеу",
+    "search.select_city": "— Қаланы таңдаңыз —",
+    "search.housing_type": "Тұрғын үй түрі",
+    "search.housing_house": "Үй",
+    "search.housing_villa": "Вилла",
+    "search.housing_apt": "Пәтер",
+
+    "cities.mecca": "Мекке",
+    "cities.medina": "Мәдина",
+    "cities.jeddah": "Жидда",
+    "cities.riyadh": "Эр-Рияд",
+    "cities.taif": "Таиф",
+    "cities.abha": "Абха",
+    "cities.alula": "Әл-Ула",
+    "cities.section_title": "Танымал бағыттар",
+
+    "features.f1_title": "Қазір брондаңыз, қонақүйде төлеңіз",
+    "features.f1_desc": "Көптеген нөмірлерде тегін болдырмау",
+    "features.f2_title": "Қажылардың нақты пікірлері",
+    "features.f2_desc": "Клиенттерімізден тексерілген пікірлер",
+    "features.f3_title": "СӘО 7 қаласында 14 қонақүй",
+    "features.f3_desc": "Қонақүйлер, пәтерлер және VIP-резиденциялар",
+    "features.f4_title": "WhatsApp арқылы 24/7 қолдау",
+    "features.f4_desc": "Менеджер әрқашан байланыста",
+
+    "reqtypes.title": "Өтінім түрі",
+    "reqtypes.group_name": "Топтық өтінім",
+    "reqtypes.group_badge": "10 адамнан бастап",
+    "reqtypes.group_desc": "Турагенттіктер мен ұйымдасқан топтарға арналған",
+    "reqtypes.individual_name": "Жеке өтінім",
+    "reqtypes.individual_badge": "VIP",
+    "reqtypes.individual_desc": "Жеке қызмет көрсету және VIP-сервис",
+
+    "stats.header": "Бізге сенеді",
+    "stats.pilgrims": "Қажылар",
+    "stats.cities": "Қала",
+    "stats.satisfied": "Қанағаттанған",
+    "stats.response": "Жауап",
+    "stats.partner_line": "📍 СӘО туроператорларының ресми серіктесі",
+
+    "partners.label": "Серіктес қонақүйлер",
+    "partners.title": "Мекке қонақүйлерімен тікелей келісімдер",
+    "partners.badge": "Басым серіктес",
+    "partners.note": "🛡 Делдалдарсыз тікелей келісімдер. Үздік бағалар және кепілді орналастыру.",
+
+    "faq.section_title": "Жиі қойылатын сұрақтар",
+    "faq.q1": "Өтінімді қалай беруге болады?",
+    "faq.a1": "Өтінім түрін таңдаңыз — Топтық (10 адамнан) немесе Жеке. Форманы толтырып, «Өтінімді жіберу» батырмасын басыңыз. Менеджеріміз сізбен WhatsApp арқылы 4 сағат ішінде хабарласады.",
+    "faq.q2": "Бронь қанша тұрады?",
+    "faq.a2": "Қонақүй таңдау қызметі тегін. Құны таңдалған қонақүйге, нөмір санатына, күндерге және адам санына байланысты. Нақты бағаны менеджер өтінімді өңдегеннен кейін хабарлайды.",
+    "faq.q3": "Саяхат үшін қандай құжаттар қажет?",
+    "faq.a3": "Сауд Арабиясына кіру үшін қажет: жарамды паспорт (кемінде 6 ай), умра визасы немесе туристік виза, қонақүй броньының растамасы.",
+    "faq.q4": "Өтінімді болдырмауға немесе өзгертуге болады ма?",
+    "faq.a4": "Иә, қонақүйлеріміздің көпшілігі тегін болдырмауды ұсынады. Шарттары нақты қонақүй мен тарифке байланысты. Өтінімді өзгерту үшін менеджерге хабарласыңыз.",
+    "faq.q5": "Өтінім қанша уақытта өңделеді?",
+    "faq.a5": "Менеджер жұмыс уақытында 4 сағат ішінде жауап береді. Ыстық маусымда (Рамазан, Қажылық) жауап беру уақыты сәл ұзағырақ болуы мүмкін.",
+    "faq.q6": "Топтық өтінім үшін ең аз адам саны бар ма?",
+    "faq.a6": "Иә, топтық өтінім үшін кемінде 10 адам қажет. Аз адам саны үшін VIP-сервисі бар жеке өтінімді ұсынамыз.",
+    "faq.q7": "Сіздер қандай қалаларда жұмыс істейсіздер?",
+    "faq.a7": "Мекке, Мәдина, Жидда, Эр-Рияд, Таиф, Абха, Әл-Ула — Сауд Арабиясының 7 қаласы.",
+    "faq.not_found": "Жауап таппадыңыз ба?",
+
+    "reviews.title": "Клиенттер пікірлері",
+    "reviews.subtitle": "Клиенттеріміздің нақты әсерлері",
+    "reviews.add_btn": "+ Пікір қалдыру",
+    "reviews.cat_hotel": "Қонақүй",
+    "reviews.cat_guide": "Гид",
+    "reviews.cat_org": "Ұйымдастыру",
+    "reviews.cat_food": "Тамақтану",
+    "reviews.r1_name": "Айгерим С.",
+    "reviews.r1_date": "2026 жылғы 15 ақпан",
+    "reviews.r1_text": "«Барлығы жоғары деңгейде ұйымдастырылды. Қонақүй Масжид әл-Харамға жақын, гид өте мұқият әрі білімді. Барлығына ұсынамын!»",
+    "reviews.r2_name": "Нұрлан Қ.",
+    "reviews.r2_date": "2026 жылғы 3 ақпан",
+    "reviews.r2_text": "«Тамаша сапар. Мәдина бізді жылылықпен қарсы алды. Ұйымдастыру жоғары бағаға лайық, бәрі кесте бойынша өтті.»",
+    "reviews.r3_name": "Зарина М.",
+    "reviews.r3_date": "2026 жылғы 20 қаңтар",
+    "reviews.r3_text": "«Жидда — тамаша қала. Бағдарлама қанық болды, гид қызықты әңгімеледі. Тамақтану жақсырақ болуы мүмкін еді, бірақ жалпы алғанда бәрі керемет.»",
+
+    "footer.desc": "Сауд Арабиясындағы қонақүйлерді брондау",
+    "footer.manager": "Менеджерлерге",
+    "footer.offer": "Оферта",
+    "footer.privacy": "Құпиялылық",
+    "footer.legal_line": "© 2026 umra.booking — «AlmaCEO» ЖШС, БСН: 220540013361",
+
+    "common.back": "← Артқа",
+    "common.back_home": "← Басты бетке оралу",
+    "common.submit": "Өтінімді жіберу",
+    "common.whatsapp_btn": "💬 WhatsApp-қа жазу",
+    "common.sending": "Жіберілуде...",
+    "common.agree_prefix": "Мен",
+    "common.agree_offer": "жария офертаның",
+    "common.agree_and": "және",
+    "common.agree_privacy": "құпиялылық саясатының шарттарын қабылдаймын",
+
+    "form.group_title": "Топтық өтінім",
+    "form.individual_title": "Жеке өтінім",
+    "form.field_agency": "Турагенттіктің атауы *",
+    "form.field_agency_ph": "Мысалы: Alfa Travel",
+    "form.field_contact": "Байланыс тұлғасы *",
+    "form.field_fullname": "Аты-жөні *",
+    "form.field_name_ph": "Аты-жөні",
+    "form.field_phone": "Телефон нөмірі *",
+    "form.field_phone_ph": "+7 / +966 / +998...",
+    "form.field_email": "Электрондық пошта",
+    "form.field_email_ph": "example@mail.com",
+    "form.field_city": "Қала / Бағыт *",
+    "form.field_checkin": "Келу күні *",
+    "form.field_checkout": "Кету күні *",
+    "form.field_people": "Адам саны *",
+    "form.field_people_ph": "Кемінде 10 адам",
+    "form.field_rooms": "Бөлме саны *",
+    "form.field_rooms_ph": "1–9 бөлме",
+    "form.field_roomtype": "Бөлме түрі",
+    "form.select_generic": "— Таңдаңыз —",
+    "form.roomtype_standard": "Стандарт",
+    "form.roomtype_deluxe": "Делюкс",
+    "form.roomtype_lux": "Люкс",
+    "form.roomtype_vip": "VIP Suite",
+    "form.field_hotel_pref": "Қалаулы қонақүй",
+    "form.field_hotel_pref_ph": "Қонақүй атауы немесе санаты (3★, 4★, 5★)",
+    "form.field_food": "Тамақтану *",
+    "form.select_food": "— Тамақтану түрін таңдаңыз —",
+    "form.food_none": "Тамақсыз",
+    "form.food_breakfast": "Таңғы ас кіреді",
+    "form.food_half_board": "Таңғы және кешкі ас",
+    "form.food_full_board": "Толық тамақтану",
+    "form.field_wishes": "Қосымша тілектер",
+    "form.field_wishes_group_ph": "Ерекше талаптар, көлік пен бағдарламаға қатысты тілектер...",
+    "form.field_wishes_individual_ph": "VIP тілектер, трансфер, экскурсиялар, ерекше талаптар...",
+    "form.field_amount": "Төлем сомасы (₸)",
+    "form.field_amount_group_ph": "Мысалы: 500000",
+    "form.field_amount_individual_ph": "Мысалы: 250000",
+    "form.amount_hint": "Міндетті емес — сома әлі белгісіз болса, бос қалдырыңыз",
+    "form.submit_note": "Өтінім автоматты түрде жауапты менеджерге түседі",
+    "form.success_title": "Өтінім жіберілді!",
+    "form.success_text": "Менеджер сізбен WhatsApp арқылы 4 сағат ішінде хабарласады. Сондай-ақ email-ге хат күтіңіз.",
+
+    "manager.title": "Менеджер тақтасы",
+    "manager.password_label": "Кіру құпиясөзі",
+    "manager.error": "Құпиясөз қате",
+    "manager.password_ph": "Құпиясөзді енгізіңіз",
+    "manager.login_btn": "Кіру",
+
+    "js.search_need_dates": "Келу және кету күндерін таңдаңыз",
+    "js.wa_greeting": "Сәлеметсіз бе! Қонақүй іздегім келеді:",
+    "js.wa_city": "🏙 Қала",
+    "js.wa_checkin": "📅 Келу",
+    "js.wa_checkout": "📅 Кету",
+    "js.wa_guests": "👥 Қонақтар",
+    "js.wa_new_request": "🕋 *Жаңа {type} өтінім — umra.booking*",
+    "js.wa_type_group": "топтық",
+    "js.wa_type_individual": "жеке",
+    "js.wa_sent_from": "_umrabooking.kz сайтынан жіберілді_",
+    "js.manager_welcome": "Қош келдіңіз! Менеджер тақтасы әзірленуде.",
+    "js.review_soon": "Функция жақын арада қолжетімді болады!",
+
+    // REVIEW FORM (modal)
+    "review_form.title": "Пікір қалдыру",
+    "review_form.field_name": "Атыңыз *",
+    "review_form.field_name_ph": "Атыңыз қалай",
+    "review_form.field_city": "Барған қала *",
+    "review_form.select_city": "— Қаланы таңдаңыз —",
+    "review_form.field_date": "Сапардың айы мен жылы *",
+    "review_form.date_ph": "Мысалы: 2026 жылғы наурыз",
+    "review_form.ratings_title": "Бағалар (1–5 ⭐)",
+    "review_form.cat_hotel": "🏨 Қонақүй",
+    "review_form.cat_org": "📋 Ұйымдастыру",
+    "review_form.cat_guide": "🧭 Гид",
+    "review_form.cat_food": "🍽 Тамақтану",
+    "review_form.field_text": "Пікір мәтіні *",
+    "review_form.text_ph": "Сапарыңыз туралы айтыңыз...",
+    "review_form.field_contact": "Байланыс (телефон/email)",
+    "review_form.contact_ph": "Міндетті емес",
+    "review_form.agree": "Пікірді сайтта жариялауға рұқсат беремін",
+    "review_form.submit": "Пікір жіберу",
+    "review_form.sending": "Жіберілуде...",
+    "review_form.close": "✕",
+    "review_form.wa_header": "🌟 Жаңа пікір — umra.booking",
+    "review_form.wa_name": "Аты",
+    "review_form.wa_city": "Қала",
+    "review_form.wa_date": "Сапар күні",
+    "review_form.wa_ratings": "Бағалар",
+    "review_form.wa_text": "Пікір",
+    "review_form.wa_contact": "Байланыс",
+    "review_form.wa_consent": "Жариялауға келісім: ИӘ",
+    "review_form.success_title": "Пікіріңізге рахмет!",
+    "review_form.success_text": "Тексеріп, сайтта жарияланады.",
+
+    // ACCOMMODATION TYPE
+    "form.field_acc_type": "Орналасу түрі *",
+    "form.acc_select": "— Түрін таңдаңыз —",
+    "form.acc_single": "Single — Бір орындық",
+    "form.acc_double": "Double — Екі орындық",
+    "form.acc_triple": "Triple — Үш орындық",
+    "form.acc_quad": "Quad — Төрт орындық",
+  },
+
+  en: {
+    "nav.hotels": "Hotels",
+    "nav.group": "Group Tours",
+    "nav.individual": "Individual",
+    "nav.cities": "Cities",
+    "nav.manager_link": "For Managers",
+
+    "hero.title_line1": "Find a hotel for",
+    "hero.title_line2": "Umrah and Hajj",
+    "hero.subtitle": "14 hotels in 7 cities across Saudi Arabia",
+
+    "search.title": "Where are you going?",
+    "search.checkin": "Check-in date",
+    "search.checkout": "Check-out date",
+    "search.guests": "Guests",
+    "search.adults": "Adults",
+    "search.rooms": "Rooms",
+    "search.days": "Days",
+    "search.month_ph": "month",
+    "search.done": "Done",
+    "search.btn": "Search",
+    "search.select_city": "— Select a city —",
+    "search.housing_type": "Property type",
+    "search.housing_house": "House",
+    "search.housing_villa": "Villa",
+    "search.housing_apt": "Apartment",
+
+    "cities.mecca": "Mecca",
+    "cities.medina": "Medina",
+    "cities.jeddah": "Jeddah",
+    "cities.riyadh": "Riyadh",
+    "cities.taif": "Taif",
+    "cities.abha": "Abha",
+    "cities.alula": "AlUla",
+    "cities.section_title": "Popular destinations",
+
+    "features.f1_title": "Book now, pay at the hotel",
+    "features.f1_desc": "Free cancellation on most rooms",
+    "features.f2_title": "Real pilgrim reviews",
+    "features.f2_desc": "Verified reviews from our clients",
+    "features.f3_title": "14 hotels in 7 cities of KSA",
+    "features.f3_desc": "Hotels, apartments and VIP residences",
+    "features.f4_title": "24/7 support on WhatsApp",
+    "features.f4_desc": "A manager is always available",
+
+    "reqtypes.title": "Request type",
+    "reqtypes.group_name": "Group request",
+    "reqtypes.group_badge": "From 10 people",
+    "reqtypes.group_desc": "For travel agencies and organized groups",
+    "reqtypes.individual_name": "Individual request",
+    "reqtypes.individual_badge": "VIP",
+    "reqtypes.individual_desc": "Personal service and VIP treatment",
+
+    "stats.header": "Trusted by",
+    "stats.pilgrims": "Pilgrims",
+    "stats.cities": "Cities",
+    "stats.satisfied": "Satisfied",
+    "stats.response": "Response",
+    "stats.partner_line": "📍 Official partner of KSA tour operators",
+
+    "partners.label": "Partner hotels",
+    "partners.title": "Direct contracts with Mecca hotels",
+    "partners.badge": "Priority partner",
+    "partners.note": "🛡 Direct agreements — no middlemen. Best prices and guaranteed check-in.",
+
+    "faq.section_title": "Frequently asked questions",
+    "faq.q1": "How do I submit a request?",
+    "faq.a1": "Choose a request type — Group (10+ people) or Individual. Fill in the form and press “Submit request”. Our manager will reach out to you on WhatsApp within 4 hours.",
+    "faq.q2": "How much does booking cost?",
+    "faq.a2": "The hotel-matching service itself is free. The cost depends on the chosen hotel, room category, dates and number of guests. The manager will confirm the exact price after processing your request.",
+    "faq.q3": "What documents do I need for the trip?",
+    "faq.a3": "To enter Saudi Arabia you need: a valid passport (at least 6 months), an Umrah or tourist visa, and hotel booking confirmation.",
+    "faq.q4": "Can I cancel or change my request?",
+    "faq.a4": "Yes, most of our hotels offer free cancellation. Terms depend on the specific hotel and rate. Contact your manager to change a request.",
+    "faq.q5": "How long does a request take to process?",
+    "faq.a5": "A manager responds within 4 hours during business hours. During peak season (Ramadan, Hajj) response time may be a bit longer.",
+    "faq.q6": "Is there a minimum group size for a group request?",
+    "faq.a6": "Yes, a group request requires at least 10 people. For smaller groups we recommend an individual request with VIP service.",
+    "faq.q7": "Which cities do you work in?",
+    "faq.a7": "Mecca, Medina, Jeddah, Riyadh, Taif, Abha, AlUla — 7 cities across Saudi Arabia.",
+    "faq.not_found": "Didn't find an answer?",
+
+    "reviews.title": "Customer reviews",
+    "reviews.subtitle": "Real impressions from our clients",
+    "reviews.add_btn": "+ Leave a review",
+    "reviews.cat_hotel": "Hotel",
+    "reviews.cat_guide": "Guide",
+    "reviews.cat_org": "Organization",
+    "reviews.cat_food": "Meals",
+    "reviews.r1_name": "Aigerim S.",
+    "reviews.r1_date": "February 15, 2026",
+    "reviews.r1_text": "“Everything was organized at the highest level. The hotel is close to Masjid al-Haram, the guide was very attentive and knowledgeable. I recommend it to everyone!”",
+    "reviews.r2_name": "Nurlan K.",
+    "reviews.r2_date": "February 3, 2026",
+    "reviews.r2_text": "“A great trip. Medina welcomed us warmly. The organization deserves high marks, everything went on schedule.”",
+    "reviews.r3_name": "Zarina M.",
+    "reviews.r3_date": "January 20, 2026",
+    "reviews.r3_text": "“Jeddah is an amazing city. The program was packed, the guide told us interesting stories. The food could have been better, but overall everything was great.”",
+
+    "footer.desc": "Hotel booking in Saudi Arabia",
+    "footer.manager": "For managers",
+    "footer.offer": "Public offer",
+    "footer.privacy": "Privacy",
+    "footer.legal_line": "© 2026 umra.booking — AlmaCEO LLP, Business ID: 220540013361",
+
+    "common.back": "← Back",
+    "common.back_home": "← Back to home",
+    "common.submit": "Submit request",
+    "common.whatsapp_btn": "💬 Message on WhatsApp",
+    "common.sending": "Sending...",
+    "common.agree_prefix": "I accept the terms of the",
+    "common.agree_offer": "public offer",
+    "common.agree_and": "and",
+    "common.agree_privacy": "privacy policy",
+
+    "form.group_title": "Group request",
+    "form.individual_title": "Individual request",
+    "form.field_agency": "Travel agency name *",
+    "form.field_agency_ph": "E.g. Alfa Travel",
+    "form.field_contact": "Contact person *",
+    "form.field_fullname": "Full name *",
+    "form.field_name_ph": "Full name",
+    "form.field_phone": "Phone number *",
+    "form.field_phone_ph": "+7 / +966 / +998...",
+    "form.field_email": "Email",
+    "form.field_email_ph": "example@mail.com",
+    "form.field_city": "City / Destination *",
+    "form.field_checkin": "Check-in date *",
+    "form.field_checkout": "Check-out date *",
+    "form.field_people": "Number of people *",
+    "form.field_people_ph": "Minimum 10 people",
+    "form.field_rooms": "Number of rooms *",
+    "form.field_rooms_ph": "1–9 rooms",
+    "form.field_roomtype": "Room type",
+    "form.select_generic": "— Select —",
+    "form.roomtype_standard": "Standard",
+    "form.roomtype_deluxe": "Deluxe",
+    "form.roomtype_lux": "Suite",
+    "form.roomtype_vip": "VIP Suite",
+    "form.field_hotel_pref": "Preferred hotel",
+    "form.field_hotel_pref_ph": "Hotel name or category (3★, 4★, 5★)",
+    "form.field_food": "Meals *",
+    "form.select_food": "— Select meal plan —",
+    "form.food_none": "No meals",
+    "form.food_breakfast": "Breakfast included",
+    "form.food_half_board": "Breakfast & dinner",
+    "form.food_full_board": "Full board",
+    "form.field_wishes": "Additional requests",
+    "form.field_wishes_group_ph": "Special requirements, transport or itinerary preferences...",
+    "form.field_wishes_individual_ph": "VIP requests, transfer, excursions, special requirements...",
+    "form.field_amount": "Payment amount (₸)",
+    "form.field_amount_group_ph": "E.g. 500000",
+    "form.field_amount_individual_ph": "E.g. 250000",
+    "form.amount_hint": "Optional — leave blank if the amount isn't known yet",
+    "form.submit_note": "Your request will automatically reach the responsible manager",
+    "form.success_title": "Request sent!",
+    "form.success_text": "A manager will contact you on WhatsApp within 4 hours. Also watch your email for a confirmation.",
+
+    "manager.title": "Manager panel",
+    "manager.password_label": "Access password",
+    "manager.error": "Incorrect password",
+    "manager.password_ph": "Enter password",
+    "manager.login_btn": "Log in",
+
+    "js.search_need_dates": "Please select check-in and check-out dates",
+    "js.wa_greeting": "Hello! I'd like to find a hotel:",
+    "js.wa_city": "🏙 City",
+    "js.wa_checkin": "📅 Check-in",
+    "js.wa_checkout": "📅 Check-out",
+    "js.wa_guests": "👥 Guests",
+    "js.wa_new_request": "🕋 *New {type} request — umra.booking*",
+    "js.wa_type_group": "group",
+    "js.wa_type_individual": "individual",
+    "js.wa_sent_from": "_Sent from umrabooking.kz_",
+    "js.manager_welcome": "Welcome! The manager panel is under development.",
+    "js.review_soon": "This feature will be available soon!",
+
+    // REVIEW FORM (modal)
+    "review_form.title": "Leave a review",
+    "review_form.field_name": "Your name *",
+    "review_form.field_name_ph": "What's your name",
+    "review_form.field_city": "City visited *",
+    "review_form.select_city": "— Select a city —",
+    "review_form.field_date": "Month and year of trip *",
+    "review_form.date_ph": "E.g. March 2026",
+    "review_form.ratings_title": "Ratings (1–5 ⭐)",
+    "review_form.cat_hotel": "🏨 Hotel",
+    "review_form.cat_org": "📋 Organization",
+    "review_form.cat_guide": "🧭 Guide",
+    "review_form.cat_food": "🍽 Meals",
+    "review_form.field_text": "Review text *",
+    "review_form.text_ph": "Tell us about your trip...",
+    "review_form.field_contact": "Contact (phone/email)",
+    "review_form.contact_ph": "Optional",
+    "review_form.agree": "I allow this review to be published on the website",
+    "review_form.submit": "Submit review",
+    "review_form.sending": "Sending...",
+    "review_form.close": "✕",
+    "review_form.wa_header": "🌟 New review — umra.booking",
+    "review_form.wa_name": "Name",
+    "review_form.wa_city": "City",
+    "review_form.wa_date": "Trip date",
+    "review_form.wa_ratings": "Ratings",
+    "review_form.wa_text": "Review",
+    "review_form.wa_contact": "Contact",
+    "review_form.wa_consent": "Consent to publish: YES",
+    "review_form.success_title": "Thank you for your review!",
+    "review_form.success_text": "We'll review it and publish it on the site.",
+
+    // ACCOMMODATION TYPE
+    "form.field_acc_type": "Accommodation type *",
+    "form.acc_select": "— Select type —",
+    "form.acc_single": "Single",
+    "form.acc_double": "Double",
+    "form.acc_triple": "Triple",
+    "form.acc_quad": "Quad",
+  },
+};
+
+/* ---------- Плюрализация (только для отображения, не хранится в словаре) ---------- */
+function pluralRu(n, one, few, many) {
+  const mod10 = n % 10;
+  const mod100 = n % 100;
+  if (mod100 > 10 && mod100 < 20) return many;
+  if (mod10 === 1) return one;
+  if (mod10 > 1 && mod10 < 5) return few;
+  return many;
+}
+function hotelsWord(n, lang) {
+  if (lang === "ru") return pluralRu(n, "отель", "отеля", "отелей");
+  if (lang === "kz") return "қонақүй";
+  return n === 1 ? "hotel" : "hotels";
+}
+function guestsWord(n, lang) {
+  if (lang === "ru") return pluralRu(n, "гость", "гостя", "гостей");
+  if (lang === "kz") return "қонақ";
+  return n === 1 ? "guest" : "guests";
+}
+function nightsWord(n, lang) {
+  if (lang === "ru") return pluralRu(n, "ночь", "ночи", "ночей");
+  if (lang === "kz") return "түн";
+  return n === 1 ? "night" : "nights";
+}
+
+/* ---------- Движок ---------- */
+let currentLang = (function () {
+  try {
+    return localStorage.getItem("umra_lang") || "ru";
+  } catch (e) {
+    return "ru";
+  }
+})();
+
+function t(key) {
+  const dict = translations[currentLang] || translations.ru;
+  return dict[key] !== undefined ? dict[key] : translations.ru[key] || key;
+}
+
+function updateCityCounts() {
+  document.querySelectorAll(".city-count[data-count]").forEach((el) => {
+    const n = parseInt(el.getAttribute("data-count"), 10);
+    el.textContent = `${n} ${hotelsWord(n, currentLang)}`;
+  });
+}
+
+function applyTranslations() {
+  document.documentElement.lang = currentLang;
+
+  document.querySelectorAll("[data-i18n]").forEach((el) => {
+    el.textContent = t(el.getAttribute("data-i18n"));
+  });
+
+  document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
+    el.placeholder = t(el.getAttribute("data-i18n-placeholder"));
+  });
+
+  document.querySelectorAll(".lang-btn").forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.lang === currentLang);
+  });
+
+  updateCityCounts();
+  if (typeof updateGuestsDisplay === "function") updateGuestsDisplay();
+  if (typeof renderDateField === "function") {
+    renderDateField('checkin');
+    renderDateField('checkout');
+  }
+}
+
+function setLanguage(lang) {
+  if (!translations[lang]) return;
+  currentLang = lang;
+  try {
+    localStorage.setItem("umra_lang", lang);
+  } catch (e) {
+    /* localStorage недоступен (приватный режим и т.п.) — просто не сохраняем */
+  }
+  applyTranslations();
+}
+
+document.addEventListener("DOMContentLoaded", applyTranslations);
+
+// PARTNER HOTELS — city filter
+function filterPartnersByCity(city, btn) {
+  document.querySelectorAll('#partnersCityTabs .partner-city-tab').forEach(function (t) {
+    t.classList.remove('active');
+  });
+  if (btn) btn.classList.add('active');
+
+  document.querySelectorAll('#partnersGrid .partner-card').forEach(function (card) {
+    if (card.dataset.city === city) {
+      card.classList.remove('is-hidden');
+    } else {
+      card.classList.add('is-hidden');
+    }
+  });
+}
+
+
+/* eslint-env browser */
+/* global document, window, alert, t, currentLang, guestsWord, nightsWord, translations */
+
+  // Сообщения менеджеру в WhatsApp всегда на русском, независимо от языка
+  // интерфейса посетителя — менеджеры читают по-русски.
+  function tr(key) {
+    return translations.ru[key] || key;
+  }
+
   // PAGE NAVIGATION
   function showPage(id) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -1281,13 +2425,370 @@
     window.scrollTo(0, 0);
   }
 
-  // GUESTS
+  // ===== DATES: сегментированный ввод (день / месяц буквами / год) =====
+  // Хранение значения — ISO (гггг-мм-дд) на нативном input[type=date].
+  // Отображение — три кликабельных/редактируемых сегмента в .date-seg-wrap.
+  function pad2(n) { return String(n).padStart(2, '0'); }
+
+  const MONTH_NAMES = {
+    ru: ['январь','февраль','март','апрель','май','июнь','июль','август','сентябрь','октябрь','ноябрь','декабрь'],
+    kz: ['қаңтар','ақпан','наурыз','сәуір','мамыр','маусым','шілде','тамыз','қыркүйек','қазан','қараша','желтоқсан'],
+    en: ['January','February','March','April','May','June','July','August','September','October','November','December']
+  };
+  function monthName(monthIndex /* 0-11 */) {
+    const list = MONTH_NAMES[currentLang] || MONTH_NAMES.ru;
+    return list[monthIndex];
+  }
+  function daysInMonth(year, monthIndex /* 0-11 */) {
+    return new Date(year, monthIndex + 1, 0).getDate();
+  }
+
+  // Состояние ввода для каждого поля (checkin / checkout) — пока дата не завершена.
+  const dateState = {
+    checkin: { day: null, month: null, year: null, seg: 'day', buf: '' },
+    checkout: { day: null, month: null, year: null, seg: 'day', buf: '' }
+  };
+
+  function getDateIso(key) {
+    return document.getElementById('search-' + key + '-native').value || '';
+  }
+
+  function renderDateField(key) {
+    const st = dateState[key];
+    const wrap = document.getElementById('search-' + key + '-wrap');
+    const dayEl = wrap.querySelector('.date-seg-day');
+    const monthEl = wrap.querySelector('.date-seg-month');
+    const yearEl = wrap.querySelector('.date-seg-year');
+
+    if (st.seg === 'day' && st.buf) {
+      dayEl.textContent = pad2(parseInt(st.buf, 10));
+      dayEl.classList.remove('placeholder');
+    } else {
+      dayEl.textContent = st.day !== null ? pad2(st.day) : '00';
+      dayEl.classList.toggle('placeholder', st.day === null);
+    }
+
+    if (st.seg === 'month' && st.buf) {
+      // Вторая цифра месяца ещё не введена — показываем сами цифры
+      monthEl.textContent = pad2(parseInt(st.buf, 10));
+      monthEl.classList.remove('placeholder');
+    } else if (st.month !== null) {
+      monthEl.textContent = pad2(st.month + 1);
+      monthEl.classList.remove('placeholder');
+    } else {
+      monthEl.textContent = 'мм';
+      monthEl.classList.add('placeholder');
+    }
+
+    yearEl.textContent = st.year !== null ? String(st.year) : '2000';
+    yearEl.classList.toggle('placeholder', st.year === null);
+
+    wrap.querySelectorAll('.date-seg').forEach((el) => el.classList.remove('active'));
+    wrap.querySelector('.date-seg-' + st.seg).classList.add('active');
+  }
+  function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+  function syncNativeFromState(key, opts) {
+    const st = dateState[key];
+    const native = document.getElementById('search-' + key + '-native');
+    if (st.day !== null && st.month !== null && st.year !== null && st.year >= 1000) {
+      native.value = `${st.year}-${pad2(st.month + 1)}-${pad2(st.day)}`;
+    } else {
+      native.value = '';
+    }
+    renderDateField(key);
+    if (!opts || !opts.silent) updateGuestsDisplay();
+  }
+
+  function setDateIso(key, iso, opts) {
+    const st = dateState[key];
+    if (iso) {
+      const [y, m, d] = iso.split('-').map(Number);
+      st.day = d; st.month = m - 1; st.year = y;
+    } else {
+      st.day = null; st.month = null; st.year = null;
+    }
+    st.seg = 'day'; st.buf = '';
+    syncNativeFromState(key, opts);
+  }
+
+  function openNativeDate(nativeId) {
+    // На мобильном сам input[type=date] растянут на всю плитку и кликабелен
+    // напрямую (см. CSS @media max-width:640px) — браузер откроет системный
+    // календарь сам по тапу. Программный вызов здесь больше не нужен и может
+    // конфликтовать (двойное открытие/закрытие), поэтому на мобильном выходим.
+    if (window.matchMedia('(max-width: 640px)').matches || ('ontouchstart' in window) || navigator.maxTouchPoints > 0) {
+      return;
+    }
+    const native = document.getElementById(nativeId);
+    native.style.pointerEvents = 'auto';
+    if (typeof native.showPicker === 'function') {
+      native.showPicker();
+    } else {
+      native.focus();
+      native.click();
+    }
+    setTimeout(() => { native.style.pointerEvents = 'none'; }, 0);
+  }
+
+  function moveSeg(key, seg) {
+    dateState[key].seg = seg;
+    dateState[key].buf = '';
+    renderDateField(key);
+  }
+
+  // Ввод цифры в активный сегмент дня (01-31)
+  function inputDigitDay(key, digit) {
+    const st = dateState[key];
+    st.buf += digit;
+    let val = parseInt(st.buf, 10);
+    if (st.buf.length >= 2) {
+      // Две цифры введены — фиксируем день (минимум 1, максимум 31; точная
+      // верхняя граница месяца скорректируется позже в clampDayToMonth)
+      if (val < 1) val = 1;
+      if (val > 31) val = 31;
+      st.day = val;
+      st.buf = '';
+      moveSeg(key, 'month');
+      return;
+    }
+    // Одна цифра: 4–9 однозначно завершают день (04-09); "0" и "1","2","3" ждут вторую цифру
+    if (val >= 4) {
+      st.day = val;
+      st.buf = '';
+      moveSeg(key, 'month');
+      return;
+    }
+    // val 0,1,2,3 — ждём вторую цифру; день пока не подтверждён (избегаем "00")
+    renderDateField(key);
+  }
+
+  // Ввод цифры в сегмент месяца (01-12) — та же логика автопереноса, что и у дня
+  function inputDigitMonth(key, digit) {
+    const st = dateState[key];
+    st.buf += digit;
+    const val = parseInt(st.buf, 10);
+    if (st.buf.length >= 2) {
+      // Две цифры введены — фиксируем месяц (01-12)
+      const clamped = Math.min(12, Math.max(1, val));
+      st.buf = '';
+      selectMonth(key, clamped - 1);
+      return;
+    }
+    // Одна цифра: 2–9 однозначно завершают месяц (02-09); "0" и "1" ждут вторую цифру
+    if (val >= 2) {
+      st.buf = '';
+      selectMonth(key, val - 1);
+      return;
+    }
+    // val === 0 или 1 — ждём вторую цифру, показываем введённую цифру как есть
+    renderDateField(key);
+  }
+
+  function inputDigitYear(key, digit) {
+    const st = dateState[key];
+    st.buf += digit;
+    const val = parseInt(st.buf, 10);
+    st.year = val;
+    if (st.buf.length >= 4) {
+      st.buf = '';
+      finalizeDate(key);
+      return;
+    }
+    renderDateField(key);
+  }
+
+  function selectMonth(key, monthIndex) {
+    const st = dateState[key];
+    st.month = monthIndex;
+    st.buf = '';
+    // Корректируем день сразу только если год уже известен — иначе дождёмся
+    // ввода года, чтобы не обрезать 29 февраля високосного года по ошибке.
+    if (st.year !== null) clampDayToMonth(key);
+    moveSeg(key, 'year');
+  }
+
+  // Корректировка дня под количество дней в выбранном месяце/году
+  function clampDayToMonth(key) {
+    const st = dateState[key];
+    if (st.day === null || st.month === null) return;
+    const year = st.year !== null ? st.year : new Date().getFullYear();
+    const max = daysInMonth(year, st.month);
+    if (st.day > max) st.day = max;
+  }
+
+  function finalizeDate(key) {
+    const st = dateState[key];
+    clampDayToMonth(key);
+    if (st.day !== null && st.month !== null && st.year !== null && st.year >= 1000) {
+      syncNativeFromState(key);
+    } else {
+      renderDateField(key);
+    }
+  }
+
+  function handleSegKeydown(key, e) {
+    const st = dateState[key];
+
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      if (st.seg === 'month') moveSeg(key, 'day');
+      else if (st.seg === 'year') moveSeg(key, 'month');
+      return;
+    }
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      if (st.seg === 'day') moveSeg(key, 'month');
+      else if (st.seg === 'month') moveSeg(key, 'year');
+      return;
+    }
+    if (e.key === 'Backspace') {
+      e.preventDefault();
+      if (st.seg === 'day') { st.day = null; st.buf = ''; }
+      else if (st.seg === 'month') { st.month = null; st.buf = ''; }
+      else if (st.seg === 'year') {
+        if (st.buf.length > 0) { st.buf = st.buf.slice(0, -1); st.year = st.buf ? parseInt(st.buf, 10) : null; }
+        else { st.year = null; }
+      }
+      renderDateField(key);
+      return;
+    }
+    if (e.key === 'Tab') return; // обычное поведение
+
+    if (/^[0-9]$/.test(e.key)) {
+      e.preventDefault();
+      if (st.seg === 'day') inputDigitDay(key, e.key);
+      else if (st.seg === 'month') inputDigitMonth(key, e.key);
+      else if (st.seg === 'year') inputDigitYear(key, e.key);
+      if (st.day !== null && st.month !== null && st.year !== null && String(st.year).length >= 4) {
+        finalizeDate(key);
+      }
+      return;
+    }
+    e.preventDefault();
+  }
+
+  // Мобильные/тач-устройства: ручной ввод даты по сегментам отключаем —
+  // тап в любом месте поля просто открывает нативный календарь (см. openNativeDate
+  // в onclick="" у .date-half). Эвристика: тач-устройство ИЛИ узкий экран.
+  function isMobileDateMode() {
+    return window.matchMedia('(max-width: 640px)').matches ||
+           ('ontouchstart' in window) ||
+           navigator.maxTouchPoints > 0;
+  }
+
+  function bindDateField(key) {
+    const wrap = document.getElementById('search-' + key + '-wrap');
+    const native = document.getElementById('search-' + key + '-native');
+
+    if (!isMobileDateMode()) {
+      // Десктоп: оставляем посегментный ввод с клавиатуры как раньше
+      wrap.setAttribute('tabindex', '0');
+      wrap.addEventListener('click', (e) => {
+        wrap.focus();
+        const target = e.target.closest('.date-seg');
+        if (target) moveSeg(key, target.getAttribute('data-seg'));
+      });
+      wrap.addEventListener('focus', () => wrap.classList.add('focused'));
+      wrap.addEventListener('blur', () => {
+        wrap.classList.remove('focused');
+        finalizeDate(key);
+      });
+      wrap.addEventListener('keydown', (e) => handleSegKeydown(key, e));
+    } else {
+      // Мобильный: не фокусируем и не перехватываем тап — пусть всплывает
+      // к родительскому .date-half, который вызывает openNativeDate().
+      wrap.removeAttribute('tabindex');
+    }
+
+    // Выбор через нативный календарь — обновляет сегменты (работает в обоих режимах)
+    native.addEventListener('change', () => setDateIso(key, native.value));
+
+    renderDateField(key);
+  }
+  bindDateField('checkin');
+  bindDateField('checkout');
+
+  // ===== НАДЁЖНАЯ ПРИВЯЗКА СОБЫТИЙ: date-half + guests =====
+  // Защита от двойного срабатывания (click сразу после touchend на одном тапе)
+  function bindDateHalfActivation(halfId, nativeId) {
+    const el = document.getElementById(halfId);
+    if (!el) return;
+    let lastTouchEnd = 0;
+    el.addEventListener('touchend', function(e) {
+      // На мобильном нативный input[type=date] сам растянут и открывается тапом —
+      // openNativeDate() на мобильном ничего не делает, но вызов безопасен.
+      lastTouchEnd = Date.now();
+      openNativeDate(nativeId);
+    }, { passive: true });
+    el.addEventListener('click', function(e) {
+      if (Date.now() - lastTouchEnd < 400) return; // подавляем ghost click после touch
+      openNativeDate(nativeId);
+    });
+    el.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openNativeDate(nativeId);
+      }
+    });
+  }
+  bindDateHalfActivation('date-half-checkin', 'search-checkin-native');
+  bindDateHalfActivation('date-half-checkout', 'search-checkout-native');
+
+  // Поле гостей
+  (function() {
+    const field = document.getElementById('guests-field');
+    if (!field) return;
+    let lastTouchEnd = 0;
+    function _toggle() {
+      toggleGuests();
+      const popup = document.getElementById('guests-popup');
+      field.setAttribute('aria-expanded', popup.classList.contains('open') ? 'true' : 'false');
+    }
+    field.addEventListener('touchend', function(e) {
+      lastTouchEnd = Date.now();
+      _toggle();
+    }, { passive: true });
+    field.addEventListener('click', function(e) {
+      if (Date.now() - lastTouchEnd < 400) return;
+      _toggle();
+    });
+    field.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        _toggle();
+      }
+    });
+  })();
+
+  // GUESTS / ROOMS / DAYS
   let guestCount = 2;
+  let roomCount = 1;
+  let dayCount = 7;
+  let currentHousing = 'house'; // 'house' | 'villa' | 'apartment'
+
+  function setHousing(type) {
+    currentHousing = type;
+    document.querySelectorAll('.housing-pill').forEach(function(btn) {
+      btn.classList.toggle('active', btn.dataset.housing === type);
+    });
+    // При вилле скрываем выбор комнат (их нет по смыслу)
+    var roomsRow = document.getElementById('rooms-row');
+    if (roomsRow) roomsRow.style.display = type === 'villa' ? 'none' : '';
+    updateGuestsDisplay();
+  }
   function toggleGuests() {
-    document.getElementById('guests-popup').classList.toggle('open');
+    const popup = document.getElementById('guests-popup');
+    const willOpen = !popup.classList.contains('open');
+    popup.classList.toggle('open', willOpen);
+    popup.style.display = willOpen ? 'block' : 'none';
   }
   function closeGuests() {
-    document.getElementById('guests-popup').classList.remove('open');
+    const popup = document.getElementById('guests-popup');
+    popup.classList.remove('open');
+    popup.style.display = 'none';
+    const field = document.getElementById('guests-field');
+    if (field) field.setAttribute('aria-expanded', 'false');
     updateGuestsDisplay();
   }
   function changeGuests(delta) {
@@ -1295,29 +2796,53 @@
     document.getElementById('guests-count').textContent = guestCount;
     updateGuestsDisplay();
   }
+  function changeRooms(delta) {
+    roomCount = Math.max(1, roomCount + delta);
+    document.getElementById('rooms-count').textContent = roomCount;
+    updateGuestsDisplay();
+  }
+  function changeDays(delta) {
+    dayCount = Math.max(1, dayCount + delta);
+    document.getElementById('days-count').textContent = dayCount;
+    // Синхронизируем дату выезда с количеством дней, если есть дата заезда
+    const checkinIso = getDateIso('checkin');
+    if (checkinIso) {
+      const dt = new Date(checkinIso);
+      dt.setDate(dt.getDate() + dayCount);
+      setDateIso('checkout', `${dt.getFullYear()}-${pad2(dt.getMonth() + 1)}-${pad2(dt.getDate())}`, { silent: true });
+    }
+    updateGuestsDisplay();
+  }
+  function roomsWord(n, lang) {
+    if (lang === 'ru') return pluralRu(n, 'комната', 'комнаты', 'комнат');
+    if (lang === 'kz') return 'бөлме';
+    return n === 1 ? 'room' : 'rooms';
+  }
   function updateGuestsDisplay() {
-    const checkin = document.getElementById('search-checkin').value;
-    const checkout = document.getElementById('search-checkout').value;
-    let nights = 7;
+    const checkin = getDateIso('checkin');
+    const checkout = getDateIso('checkout');
     if (checkin && checkout) {
       const d = (new Date(checkout) - new Date(checkin)) / 86400000;
-      if (d > 0) nights = d;
+      if (d > 0) dayCount = d;
+      document.getElementById('days-count').textContent = dayCount;
     }
-    document.getElementById('guests-display').textContent = `${guestCount} гост${guestCount === 1 ? 'ь' : 'я'} · ${nights} ноч${nights === 1 ? 'ь' : nights < 5 ? 'и' : 'ей'}`;
+    document.getElementById('guests-display').textContent =
+      `${guestCount} ${guestsWord(guestCount, currentLang)} · ${roomCount} ${roomsWord(roomCount, currentLang)} · ${dayCount} ${nightsWord(dayCount, currentLang)}`;
   }
-  document.getElementById('search-checkin').addEventListener('change', updateGuestsDisplay);
-  document.getElementById('search-checkout').addEventListener('change', updateGuestsDisplay);
 
   function handleSearch() {
-    const city = document.getElementById('search-city').options[document.getElementById('search-city').selectedIndex].text;
-    const checkin = document.getElementById('search-checkin').value;
-    const checkout = document.getElementById('search-checkout').value;
+    const citySelect = document.getElementById('search-city');
+    const selectedOption = citySelect.options[citySelect.selectedIndex];
+    const cityKey = selectedOption.getAttribute('data-i18n');
+    const cityRu = (cityKey && tr(cityKey)) || selectedOption.text;
+    const checkin = getDateIso('checkin');
+    const checkout = getDateIso('checkout');
     if (!checkin || !checkout) {
-      alert('Пожалуйста, выберите даты заезда и выезда');
+      alert(t('js.search_need_dates'));
       return;
     }
-    // Open WhatsApp with search info
-    const msg = `Здравствуйте! Хочу найти отель:\n🏙 Город: ${city}\n📅 Заезд: ${checkin}\n📅 Выезд: ${checkout}\n👥 Гостей: ${guestCount}`;
+    // Сообщение менеджеру в WhatsApp — всегда на русском
+    const msg = `${tr('js.wa_greeting')}\n${tr('js.wa_city')}: ${cityRu}\n${tr('js.wa_checkin')}: ${checkin}\n${tr('js.wa_checkout')}: ${checkout}\n${tr('js.wa_guests')}: ${guestCount}\n${tr('search.rooms')}: ${roomCount}\n${tr('search.days')}: ${dayCount}`;
     window.open('https://wa.me/966559301590?text=' + encodeURIComponent(msg), '_blank');
   }
 
@@ -1327,49 +2852,31 @@
     item.classList.toggle('open');
   }
 
-  // COLLECT FORM DATA
-  function collectFormData(form) {
-    const data = {};
-    form.querySelectorAll('input, select, textarea').forEach(el => {
-      if (el.type !== 'checkbox' && el.type !== 'submit' && el.placeholder) {
-        data[el.placeholder] = el.value;
-      }
-    });
-    return data;
-  }
-
-  function buildWhatsAppMsg(type, form) {
+  function buildWhatsAppMsg(typeKey, form) {
     const inputs = form.querySelectorAll('input:not([type=checkbox]):not([type=submit]), select, textarea');
     const labels = form.querySelectorAll('.form-label');
-    let msg = `🕋 *Новая ${type} заявка — umra.booking*\n\n`;
+    let msg = `${tr('js.wa_new_request').replace('{type}', tr(typeKey))}\n\n`;
     labels.forEach((label, i) => {
       const input = inputs[i];
-      if (input && input.value && !label.classList.contains('form-label-kaz')) {
-        msg += `*${label.textContent.replace(' *','')}:* ${input.value}\n`;
+      if (input && input.value) {
+        const key = label.getAttribute('data-i18n');
+        const ruLabel = (key && tr(key)) || label.textContent;
+        msg += `*${ruLabel.replace(' *', '')}:* ${input.value}\n`;
       }
     });
-    msg += `\n_Отправлено с сайта umrabooking.kz_`;
+    msg += `\n${tr('js.wa_sent_from')}`;
     return msg;
   }
-
-  // EMAIL via Formspree
 
   // GROUP FORM SUBMIT
   function submitGroupForm(e) {
     e.preventDefault();
     const form = document.getElementById('groupForm');
     const btn = form.querySelector('.form-submit');
-    btn.textContent = 'Отправляем...';
+    btn.textContent = t('common.sending');
     btn.disabled = true;
 
-    const msg = buildWhatsAppMsg('групповая', form);
-
-    // Send email
-    const data = {};
-    form.querySelectorAll('input:not([type=checkbox]), select, textarea').forEach((el, i) => {
-      data[`field_${i}`] = el.value;
-    });
-    
+    const msg = buildWhatsAppMsg('js.wa_type_group', form);
 
     // Show success
     document.getElementById('group-form-content').style.display = 'none';
@@ -1386,16 +2893,10 @@
     e.preventDefault();
     const form = document.getElementById('individualForm');
     const btn = form.querySelector('.form-submit');
-    btn.textContent = 'Отправляем...';
+    btn.textContent = t('common.sending');
     btn.disabled = true;
 
-    const msg = buildWhatsAppMsg('индивидуальная', form);
-
-    const data = {};
-    form.querySelectorAll('input:not([type=checkbox]), select, textarea').forEach((el, i) => {
-      data[`field_${i}`] = el.value;
-    });
-    
+    const msg = buildWhatsAppMsg('js.wa_type_individual', form);
 
     document.getElementById('individual-form-content').style.display = 'none';
     document.getElementById('individual-success').style.display = 'block';
@@ -1405,12 +2906,113 @@
     }, 800);
   }
 
+  // REVIEW MODAL
+  var rvRatings = { hotel: 0, org: 0, guide: 0, food: 0 };
+
+  function openReviewModal() {
+    rvRatings = { hotel: 0, org: 0, guide: 0, food: 0 };
+    document.getElementById('rv-name').value = '';
+    document.getElementById('rv-city').value = '';
+    document.getElementById('rv-date').value = '';
+    document.getElementById('rv-text').value = '';
+    document.getElementById('rv-contact').value = '';
+    document.getElementById('rv-agree').checked = false;
+    document.getElementById('rv-error').style.display = 'none';
+    document.getElementById('review-modal-form').style.display = '';
+    document.getElementById('review-modal-success').style.display = 'none';
+    document.getElementById('rv-submit-btn').textContent = t('review_form.submit');
+    document.getElementById('rv-submit-btn').disabled = false;
+    document.querySelectorAll('.rv-star').forEach(function(s) { s.classList.remove('active'); });
+    document.getElementById('review-modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    // Apply translations to modal elements
+    applyTranslations();
+    // Re-attach star handlers after applyTranslations
+    document.querySelectorAll('.rv-stars').forEach(function(group) {
+      var cat = group.getAttribute('data-cat');
+      group.querySelectorAll('.rv-star').forEach(function(star) {
+        star.onclick = function() { setRating(cat, parseInt(star.getAttribute('data-v'))); };
+      });
+    });
+  }
+
+  function closeReviewModal(e) {
+    if (e && e.target !== document.getElementById('review-modal')) return;
+    document.getElementById('review-modal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function setRating(cat, val) {
+    rvRatings[cat] = val;
+    var group = document.querySelector('.rv-stars[data-cat="' + cat + '"]');
+    group.querySelectorAll('.rv-star').forEach(function(s) {
+      s.classList.toggle('active', parseInt(s.getAttribute('data-v')) <= val);
+    });
+  }
+
+  function submitReview() {
+    // Honeypot check
+    if (document.getElementById('review-hp').value) return;
+
+    var name = document.getElementById('rv-name').value.trim();
+    var city = document.getElementById('rv-city').value;
+    var date = document.getElementById('rv-date').value.trim();
+    var text = document.getElementById('rv-text').value.trim();
+    var contact = document.getElementById('rv-contact').value.trim();
+    var agree = document.getElementById('rv-agree').checked;
+    var errEl = document.getElementById('rv-error');
+
+    if (!name || !city || !date || !text) {
+      errEl.textContent = currentLang === 'kz'
+        ? 'Барлық міндетті өрістерді толтырыңыз'
+        : currentLang === 'en'
+          ? 'Please fill in all required fields'
+          : 'Заполните все обязательные поля';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    var btn = document.getElementById('rv-submit-btn');
+    btn.textContent = t('review_form.sending');
+    btn.disabled = true;
+    errEl.style.display = 'none';
+
+    // Build Russian WhatsApp message (always RU for manager)
+    var stars = function(n) { return '★'.repeat(n) + '☆'.repeat(5 - n); };
+    var msg = [
+      tr('review_form.wa_header'),
+      '',
+      tr('review_form.wa_name') + ': ' + name,
+      tr('review_form.wa_city') + ': ' + city,
+      tr('review_form.wa_date') + ': ' + date,
+      '',
+      tr('review_form.wa_ratings') + ':',
+      '  🏨 ' + tr('reviews.cat_hotel') + ': ' + (rvRatings.hotel ? stars(rvRatings.hotel) + ' ' + rvRatings.hotel + '/5' : '—'),
+      '  📋 ' + tr('reviews.cat_org') + ': '  + (rvRatings.org   ? stars(rvRatings.org)   + ' ' + rvRatings.org   + '/5' : '—'),
+      '  🧭 ' + tr('reviews.cat_guide') + ': '+ (rvRatings.guide ? stars(rvRatings.guide) + ' ' + rvRatings.guide + '/5' : '—'),
+      '  🍽 ' + tr('reviews.cat_food') + ': ' + (rvRatings.food  ? stars(rvRatings.food)  + ' ' + rvRatings.food  + '/5' : '—'),
+      '',
+      tr('review_form.wa_text') + ':',
+      '«' + text + '»',
+    ];
+    if (contact) msg.push('', tr('review_form.wa_contact') + ': ' + contact);
+    if (agree) msg.push('', tr('review_form.wa_consent'));
+    msg.push('', tr('js.wa_sent_from'));
+
+    window.open('https://wa.me/966559301590?text=' + encodeURIComponent(msg.join('\n')), '_blank');
+
+    // Show success screen
+    document.getElementById('review-modal-form').style.display = 'none';
+    document.getElementById('review-modal-success').style.display = '';
+    document.body.style.overflow = '';
+  }
+
   // MANAGER LOGIN
   function managerLogin() {
     const pass = document.getElementById('manager-pass').value;
     const err = document.getElementById('manager-error');
     if (pass === 'umra2026') {
-      alert('Добро пожаловать! Панель менеджера в разработке.');
+      alert(t('js.manager_welcome'));
       err.style.display = 'none';
     } else {
       err.style.display = 'block';
@@ -1420,9 +3022,10 @@
   // Set default dates
   const today = new Date();
   const next7 = new Date(today); next7.setDate(today.getDate() + 7);
-  document.getElementById('search-checkin').value = today.toISOString().split('T')[0];
-  document.getElementById('search-checkout').value = next7.toISOString().split('T')[0];
+  setDateIso('checkin', `${today.getFullYear()}-${pad2(today.getMonth() + 1)}-${pad2(today.getDate())}`, { silent: true });
+  setDateIso('checkout', `${next7.getFullYear()}-${pad2(next7.getMonth() + 1)}-${pad2(next7.getDate())}`, { silent: true });
   updateGuestsDisplay();
+
 </script>
 
 </body>
