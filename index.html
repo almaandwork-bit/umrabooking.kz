@@ -1825,6 +1825,7 @@ const translations = {
     "js.wa_checkin": "📅 Заезд",
     "js.wa_checkout": "📅 Выезд",
     "js.wa_guests": "👥 Гостей",
+    "js.wa_housing": "🏠 Тип жилья",
     "js.wa_new_request": "🕋 *Новая {type} заявка — umra.booking*",
     "js.wa_type_group": "групповая",
     "js.wa_type_individual": "индивидуальная",
@@ -2043,6 +2044,7 @@ const translations = {
     "js.wa_checkin": "📅 Келу",
     "js.wa_checkout": "📅 Кету",
     "js.wa_guests": "👥 Қонақтар",
+    "js.wa_housing": "🏠 Тұрғын үй түрі",
     "js.wa_new_request": "🕋 *Жаңа {type} өтінім — umra.booking*",
     "js.wa_type_group": "топтық",
     "js.wa_type_individual": "жеке",
@@ -2261,6 +2263,7 @@ const translations = {
     "js.wa_checkin": "📅 Check-in",
     "js.wa_checkout": "📅 Check-out",
     "js.wa_guests": "👥 Guests",
+    "js.wa_housing": "🏠 Housing type",
     "js.wa_new_request": "🕋 *New {type} request — umra.booking*",
     "js.wa_type_group": "group",
     "js.wa_type_individual": "individual",
@@ -2842,7 +2845,9 @@ function filterPartnersByCity(city, btn) {
       return;
     }
     // Сообщение менеджеру в WhatsApp — всегда на русском
-    const msg = `${tr('js.wa_greeting')}\n${tr('js.wa_city')}: ${cityRu}\n${tr('js.wa_checkin')}: ${checkin}\n${tr('js.wa_checkout')}: ${checkout}\n${tr('js.wa_guests')}: ${guestCount}\n${tr('search.rooms')}: ${roomCount}\n${tr('search.days')}: ${dayCount}`;
+    const housingKey = currentHousing === 'villa' ? 'search.housing_villa' : (currentHousing === 'apartment' ? 'search.housing_apt' : 'search.housing_house');
+    const housingLabel = tr(housingKey);
+    const msg = `${tr('js.wa_greeting')}\n${tr('js.wa_city')}: ${cityRu}\n${tr('js.wa_housing')}: ${housingLabel}\n${tr('js.wa_checkin')}: ${checkin}\n${tr('js.wa_checkout')}: ${checkout}\n${tr('js.wa_guests')}: ${guestCount}\n${tr('search.rooms')}: ${roomCount}\n${tr('search.days')}: ${dayCount}`;
     window.open('https://wa.me/966559301590?text=' + encodeURIComponent(msg), '_blank');
   }
 
