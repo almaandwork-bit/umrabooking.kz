@@ -860,7 +860,7 @@
         <div class="housing-pills" id="housing-pills">
           <button class="housing-pill active" data-housing="house" onclick="setHousing('house')" data-i18n="search.housing_house">Дом</button>
           <button class="housing-pill" data-housing="villa" onclick="setHousing('villa')" data-i18n="search.housing_villa">Вилла</button>
-          <button class="housing-pill" data-housing="apartment" onclick="setHousing('apartment')" data-i18n="search.housing_apt">Квартира</button>
+          <button class="housing-pill" data-housing="hotel" onclick="setHousing('hotel')" data-i18n="search.housing_hotel">Отель</button>
         </div>
         <div class="guests-row">
           <div class="guests-label" data-i18n="search.adults">Взрослые</div>
@@ -899,10 +899,10 @@
   <div class="features">
     <div class="features-grid">
       <div class="feature-card">
-        <div class="feature-icon-box">✅</div>
+        <div class="feature-icon-box">🕌</div>
         <div>
-          <div class="feature-title" data-i18n="features.f1_title">Бронируй сейчас, плати в отеле</div>
-          <div class="feature-desc" data-i18n="features.f1_desc">Бесплатная отмена на большинстве номеров</div>
+          <div class="feature-title" data-i18n="features.f1_title">Рядом с Харамом</div>
+          <div class="feature-desc" data-i18n="features.f1_desc">Отели в Мекке и Медине в шаговой доступности от мечети</div>
         </div>
       </div>
       <div class="feature-card">
@@ -1668,7 +1668,7 @@ const translations = {
     "search.housing_type": "Тип жилья",
     "search.housing_house": "Дом",
     "search.housing_villa": "Вилла",
-    "search.housing_apt": "Квартира",
+    "search.housing_hotel": "Отель",
 
     // CITIES (общие названия — используются в селектах, карточках, FAQ)
     "cities.mecca": "Мекка",
@@ -1681,8 +1681,8 @@ const translations = {
     "cities.section_title": "Популярные направления",
 
     // FEATURES
-    "features.f1_title": "Бронируй сейчас, плати в отеле",
-    "features.f1_desc": "Бесплатная отмена на большинстве номеров",
+    "features.f1_title": "Рядом с Харамом",
+    "features.f1_desc": "Отели в Мекке и Медине в шаговой доступности от мечети",
     "features.f2_title": "Реальные отзывы паломников",
     "features.f2_desc": "Проверенные отзывы от наших клиентов",
     "features.f3_title": "14 отелей в 7 городах КСА",
@@ -1899,7 +1899,7 @@ const translations = {
     "search.housing_type": "Тұрғын үй түрі",
     "search.housing_house": "Үй",
     "search.housing_villa": "Вилла",
-    "search.housing_apt": "Пәтер",
+    "search.housing_hotel": "Қонақүй",
 
     "cities.mecca": "Мекке",
     "cities.medina": "Мәдина",
@@ -1910,8 +1910,8 @@ const translations = {
     "cities.alula": "Әл-Ула",
     "cities.section_title": "Танымал бағыттар",
 
-    "features.f1_title": "Қазір брондаңыз, қонақүйде төлеңіз",
-    "features.f1_desc": "Көптеген нөмірлерде тегін болдырмау",
+    "features.f1_title": "Харамға жақын",
+    "features.f1_desc": "Мекке мен Мәдинадағы қонақүйлер мешітке жаяу қашықтықта",
     "features.f2_title": "Қажылардың нақты пікірлері",
     "features.f2_desc": "Клиенттерімізден тексерілген пікірлер",
     "features.f3_title": "СӘО 7 қаласында 14 қонақүй",
@@ -2118,7 +2118,7 @@ const translations = {
     "search.housing_type": "Property type",
     "search.housing_house": "House",
     "search.housing_villa": "Villa",
-    "search.housing_apt": "Apartment",
+    "search.housing_hotel": "Hotel",
 
     "cities.mecca": "Mecca",
     "cities.medina": "Medina",
@@ -2129,8 +2129,8 @@ const translations = {
     "cities.alula": "AlUla",
     "cities.section_title": "Popular destinations",
 
-    "features.f1_title": "Book now, pay at the hotel",
-    "features.f1_desc": "Free cancellation on most rooms",
+    "features.f1_title": "Steps from the Haram",
+    "features.f1_desc": "Hotels in Mecca and Medina within walking distance of the mosque",
     "features.f2_title": "Real pilgrim reviews",
     "features.f2_desc": "Verified reviews from our clients",
     "features.f3_title": "14 hotels in 7 cities of KSA",
@@ -2768,7 +2768,7 @@ function filterPartnersByCity(city, btn) {
   let guestCount = 2;
   let roomCount = 1;
   let dayCount = 7;
-  let currentHousing = 'house'; // 'house' | 'villa' | 'apartment'
+  let currentHousing = 'house'; // 'house' | 'villa' | 'hotel'
 
   function setHousing(type) {
     currentHousing = type;
@@ -2845,7 +2845,7 @@ function filterPartnersByCity(city, btn) {
       return;
     }
     // Сообщение менеджеру в WhatsApp — всегда на русском
-    const housingKey = currentHousing === 'villa' ? 'search.housing_villa' : (currentHousing === 'apartment' ? 'search.housing_apt' : 'search.housing_house');
+    const housingKey = currentHousing === 'villa' ? 'search.housing_villa' : (currentHousing === 'hotel' ? 'search.housing_hotel' : 'search.housing_house');
     const housingLabel = tr(housingKey);
     const msg = `${tr('js.wa_greeting')}\n${tr('js.wa_city')}: ${cityRu}\n${tr('js.wa_housing')}: ${housingLabel}\n${tr('js.wa_checkin')}: ${checkin}\n${tr('js.wa_checkout')}: ${checkout}\n${tr('js.wa_guests')}: ${guestCount}\n${tr('search.rooms')}: ${roomCount}\n${tr('search.days')}: ${dayCount}`;
     window.open('https://wa.me/966559301590?text=' + encodeURIComponent(msg), '_blank');
