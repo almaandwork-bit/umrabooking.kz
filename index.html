@@ -261,6 +261,7 @@
       border: none; padding: 0; margin: 0;
     }
     .search-guests-display { flex: 1; }
+    .search-guests-hint { font-size: 11px; color: var(--text-light); margin-top: 2px; }
     .search-guests-popup {
       display: none;
       background: var(--white); border-radius: 12px;
@@ -852,7 +853,10 @@
       <div class="search-label" data-i18n="search.guests">Гости</div>
       <div class="search-field" id="guests-field" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false" aria-controls="guests-popup">
         <span>👥</span>
-        <div class="search-guests-display" id="guests-display">2 Гостя  1 Комната · 7 Ночей</div>
+        <div>
+          <div class="search-guests-display" id="guests-display">2 Гостя · 1 Комната · 7 Ночей</div>
+          <div class="search-guests-hint" id="guests-hint" data-i18n="search.tap_hint">Нажмите, чтобы выбрать</div>
+        </div>
       </div>
       <div class="search-guests-popup" id="guests-popup">
         <!-- Тип жилья -->
@@ -1669,6 +1673,7 @@ const translations = {
     "search.housing_house": "Дом",
     "search.housing_villa": "Вилла",
     "search.housing_hotel": "Отель",
+    "search.tap_hint": "Нажмите, чтобы выбрать",
 
     // CITIES (общие названия — используются в селектах, карточках, FAQ)
     "cities.mecca": "Мекка",
@@ -1900,6 +1905,7 @@ const translations = {
     "search.housing_house": "Үй",
     "search.housing_villa": "Вилла",
     "search.housing_hotel": "Қонақүй",
+    "search.tap_hint": "Таңдау үшін басыңыз",
 
     "cities.mecca": "Мекке",
     "cities.medina": "Мәдина",
@@ -2119,6 +2125,7 @@ const translations = {
     "search.housing_house": "House",
     "search.housing_villa": "Villa",
     "search.housing_hotel": "Hotel",
+    "search.tap_hint": "Tap to select",
 
     "cities.mecca": "Mecca",
     "cities.medina": "Medina",
@@ -2848,7 +2855,10 @@ function filterPartnersByCity(city, btn) {
     const housingKey = currentHousing === 'villa' ? 'search.housing_villa' : (currentHousing === 'hotel' ? 'search.housing_hotel' : 'search.housing_house');
     const housingLabel = tr(housingKey);
     const msg = `${tr('js.wa_greeting')}\n${tr('js.wa_city')}: ${cityRu}\n${tr('js.wa_housing')}: ${housingLabel}\n${tr('js.wa_checkin')}: ${checkin}\n${tr('js.wa_checkout')}: ${checkout}\n${tr('js.wa_guests')}: ${guestCount}\n${tr('search.rooms')}: ${roomCount}\n${tr('search.days')}: ${dayCount}`;
-    window.open('https://wa.me/966559301590?text=' + encodeURIComponent(msg), '_blank');
+    // Для города Мекка — отдельный номер WhatsApp, для остальных городов — старый номер
+    const cityValue = citySelect.value;
+    const waNumber = cityValue === 'mecca' ? '77072807888' : '966559301590';
+    window.open('https://wa.me/' + waNumber + '?text=' + encodeURIComponent(msg), '_blank');
   }
 
   // FAQ
