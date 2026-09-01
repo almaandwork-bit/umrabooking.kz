@@ -2855,10 +2855,7 @@ function filterPartnersByCity(city, btn) {
     const housingKey = currentHousing === 'villa' ? 'search.housing_villa' : (currentHousing === 'hotel' ? 'search.housing_hotel' : 'search.housing_house');
     const housingLabel = tr(housingKey);
     const msg = `${tr('js.wa_greeting')}\n${tr('js.wa_city')}: ${cityRu}\n${tr('js.wa_housing')}: ${housingLabel}\n${tr('js.wa_checkin')}: ${checkin}\n${tr('js.wa_checkout')}: ${checkout}\n${tr('js.wa_guests')}: ${guestCount}\n${tr('search.rooms')}: ${roomCount}\n${tr('search.days')}: ${dayCount}`;
-    // Для города Мекка — отдельный номер WhatsApp, для остальных городов — старый номер
-    const cityValue = citySelect.value;
-    const waNumber = cityValue === 'mecca' ? '77072807888' : '966559301590';
-    window.open('https://wa.me/' + waNumber + '?text=' + encodeURIComponent(msg), '_blank');
+    window.open('https://wa.me/966559301590?text=' + encodeURIComponent(msg), '_blank');
   }
 
   // FAQ
