@@ -486,6 +486,12 @@
       background: linear-gradient(135deg, #eef1fc, #e2e8fb);
     }
     .partner-card-wide .partner-icon { background: linear-gradient(135deg, var(--gold-light), var(--gold)); }
+    /* Фото отеля — подставляется автоматически вместо иконки-стикера,
+       как только в data-photo карточки появится ссылка на картинку */
+    .partner-photo {
+      width: 100%; height: 96px; margin: 0 auto 10px;
+      display: block; object-fit: cover; border-radius: 14px;
+    }
     .partner-name { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 14px; color: var(--blue); line-height: 1.25; }
     .partner-arabic { font-size: 12px; color: var(--text-light); margin: 4px 0; direction: rtl; }
     .partner-badge {
@@ -728,6 +734,60 @@
       padding: 14px 28px; border-radius: 12px;
       text-decoration: none;
       font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 14px;
+    }
+
+    /* HOTELS LIST PAGE */
+    .hotels-search-summary {
+      max-width: 700px; margin: 0 auto 18px;
+      background: #eef1fc; border-radius: 12px;
+      padding: 12px 16px; font-size: 13px; color: var(--text-mid);
+      display: flex; flex-wrap: wrap; gap: 6px 16px;
+    }
+    .hotels-search-summary b { color: var(--blue); }
+    .hotels-list { max-width: 700px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+    .hotel-list-card {
+      background: white; border-radius: var(--radius);
+      padding: 16px; box-shadow: var(--shadow);
+      display: flex; align-items: center; gap: 14px;
+      border: 1.5px solid var(--border);
+    }
+    .hotel-list-icon {
+      width: 52px; height: 52px; border-radius: 14px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; font-size: 26px;
+      background: linear-gradient(135deg, #eef1fc, #e2e8fb);
+    }
+    /* Фото отеля на странице списка отелей — подставляется вместо иконки,
+       если у отеля в data-photo указана ссылка на картинку */
+    .hotel-list-photo {
+      width: 60px; height: 60px; border-radius: 14px; flex-shrink: 0;
+      object-fit: cover;
+    }
+    .hotel-list-info { flex: 1; min-width: 0; }
+    .hotel-list-name { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 15px; color: var(--blue); line-height: 1.3; }
+    .hotel-list-arabic { font-size: 12px; color: var(--text-light); margin-top: 2px; direction: rtl; }
+    .hotel-list-badge {
+      display: inline-block; margin-top: 6px;
+      background: #fff4d0; color: #b06000;
+      font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px;
+    }
+    .hotel-book-btn {
+      flex-shrink: 0;
+      background: #25d366; color: white; border: none;
+      font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 13px;
+      padding: 12px 18px; border-radius: 10px; cursor: pointer;
+      transition: opacity 0.2s, transform 0.2s;
+      white-space: nowrap;
+    }
+    .hotel-book-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .hotels-empty {
+      max-width: 700px; margin: 0 auto; text-align: center;
+      background: white; border-radius: 20px; padding: 36px 20px; box-shadow: var(--shadow);
+    }
+    .hotels-empty-icon { font-size: 44px; margin-bottom: 12px; }
+    .hotels-empty-text { font-size: 14px; color: var(--text-mid); margin-bottom: 20px; max-width: 420px; margin-left: auto; margin-right: auto; }
+    @media (max-width: 480px) {
+      .hotel-list-card { flex-wrap: wrap; }
+      .hotel-book-btn { width: 100%; }
     }
 
     /* MANAGER PAGE */
@@ -1038,75 +1098,104 @@
       <button type="button" class="partner-city-tab active" data-city="mecca" onclick="filterPartnersByCity('mecca', this)">
         <span data-i18n="cities.mecca">🕋 Мекка</span><span class="partner-city-tab-count">(13)</span>
       </button>
+      <button type="button" class="partner-city-tab" data-city="medina" onclick="filterPartnersByCity('medina', this)">
+        <span data-i18n="cities.medina">🕌 Медина</span><span class="partner-city-tab-count">(6)</span>
+      </button>
     </div>
 
     <div class="partners-all-grid" id="partnersGrid">
-      <a href="#" class="partner-card" data-city="mecca">
+      <a href="#" class="partner-card" data-city="mecca" data-photo="">
         <div class="partner-icon">🕌</div>
         <div class="partner-name">Emar Elite</div>
         <div class="partner-arabic">إعمار إيليت</div>
         <span class="partner-badge" data-i18n="partners.badge">Приоритетный партнёр</span>
       </a>
-      <a href="#" class="partner-card" data-city="mecca">
+      <a href="#" class="partner-card" data-city="mecca" data-photo="">
         <div class="partner-icon">🏨</div>
         <div class="partner-name">Nawazi Towers</div>
         <div class="partner-arabic">نوازي تاورز</div>
         <span class="partner-badge" data-i18n="partners.badge">Приоритетный партнёр</span>
       </a>
-      <a href="#" class="partner-card" data-city="mecca">
+      <a href="#" class="partner-card" data-city="mecca" data-photo="">
         <div class="partner-icon">🏩</div>
         <div class="partner-name">Sonood al Rayan</div>
         <div class="partner-arabic">سنود الريان</div>
       </a>
-      <a href="#" class="partner-card" data-city="mecca">
+      <a href="#" class="partner-card" data-city="mecca" data-photo="">
         <div class="partner-icon">🏪</div>
         <div class="partner-name">Arak Shariga Hotel</div>
         <div class="partner-arabic">أراك شاريقة</div>
       </a>
-      <a href="#" class="partner-card" data-city="mecca">
+      <a href="#" class="partner-card" data-city="mecca" data-photo="">
         <div class="partner-icon">🏛</div>
         <div class="partner-name">Al Olayan Grand</div>
         <div class="partner-arabic">العليان جراند</div>
       </a>
-      <a href="#" class="partner-card" data-city="mecca">
+      <a href="#" class="partner-card" data-city="mecca" data-photo="">
         <div class="partner-icon">🌙</div>
         <div class="partner-name">Shurfa Talaeg Hotel</div>
         <div class="partner-arabic">شرفة الطلائع</div>
       </a>
-      <a href="#" class="partner-card" data-city="mecca">
+      <a href="#" class="partner-card" data-city="mecca" data-photo="">
         <div class="partner-icon">⭐</div>
         <div class="partner-name">Ramada Hotel</div>
         <div class="partner-arabic">رمادا مكة</div>
       </a>
-      <a href="#" class="partner-card" data-city="mecca">
+      <a href="#" class="partner-card" data-city="mecca" data-photo="">
         <div class="partner-icon">🏙</div>
         <div class="partner-name">Courtyard Hotel</div>
         <div class="partner-arabic">كورتيارد مكة</div>
       </a>
-      <a href="#" class="partner-card" data-city="mecca">
+      <a href="#" class="partner-card" data-city="mecca" data-photo="">
         <div class="partner-icon">🏢</div>
         <div class="partner-name">Qira Hotel</div>
         <div class="partner-arabic">فندق قرى</div>
       </a>
-      <a href="#" class="partner-card" data-city="mecca">
+      <a href="#" class="partner-card" data-city="mecca" data-photo="">
         <div class="partner-icon">🌅</div>
         <div class="partner-name">Fajr Badeg Hotel</div>
         <div class="partner-arabic">الفجر البديعة</div>
       </a>
-      <a href="#" class="partner-card" data-city="mecca">
+      <a href="#" class="partner-card" data-city="mecca" data-photo="">
         <div class="partner-icon">🏰</div>
         <div class="partner-name">Address Hotel</div>
         <div class="partner-arabic">عنوان جبل عمر</div>
       </a>
-      <a href="#" class="partner-card" data-city="mecca">
+      <a href="#" class="partner-card" data-city="mecca" data-photo="">
         <div class="partner-icon">🗼</div>
         <div class="partner-name">Kudi Towers</div>
         <div class="partner-arabic">كدي تاور</div>
       </a>
-      <a href="#" class="partner-card partner-card-wide" data-city="mecca">
+      <a href="#" class="partner-card partner-card-wide" data-city="mecca" data-photo="">
         <div class="partner-icon">🕋</div>
         <div class="partner-name">Al Noor Hotel</div>
         <div class="partner-arabic">فندق النور</div>
+      </a>
+
+      <!-- ОТЕЛИ МЕДИНЫ -->
+      <a href="#" class="partner-card is-hidden" data-city="medina" data-photo="">
+        <div class="partner-icon">🕌</div>
+        <div class="partner-name">Odyst Hotel Madinah</div>
+      </a>
+      <a href="#" class="partner-card is-hidden" data-city="medina" data-photo="">
+        <div class="partner-icon">🏨</div>
+        <div class="partner-name">Al Mukhtara Al Alami Hotel</div>
+      </a>
+      <a href="#" class="partner-card is-hidden" data-city="medina" data-photo="">
+        <div class="partner-icon">🏩</div>
+        <div class="partner-name">Zuwar Al Alami Hotel</div>
+      </a>
+      <a href="#" class="partner-card is-hidden" data-city="medina" data-photo="">
+        <div class="partner-icon">🏛</div>
+        <div class="partner-name">Waqf Othman Hotel</div>
+      </a>
+      <a href="#" class="partner-card is-hidden" data-city="medina" data-photo="">
+        <div class="partner-icon">🏢</div>
+        <div class="partner-name">Al Mukhtara Plaza Hotel</div>
+      </a>
+      <a href="#" class="partner-card is-hidden" data-city="medina" data-photo="">
+        <div class="partner-icon">🌙</div>
+        <div class="partner-name">Al Mukhtara Al Masi Hotel</div>
       </a>
     </div>
     <div class="partners-note max700" data-i18n="partners.note">🛡 Прямые договоры — без посредников. Лучшие цены и гарантированное заселение.</div>
@@ -1604,6 +1693,26 @@
 </div><!-- /page-individual -->
 
 
+<!-- ========== HOTELS LIST PAGE ========== -->
+<div id="page-hotels" class="page">
+  <div class="form-page-header">
+    <button class="back-btn" onclick="showPage('page-main')" data-i18n="common.back">← Назад</button>
+    <div class="form-page-title-row">
+      <div class="form-page-icon">🏨</div>
+      <div>
+        <div class="form-page-brand">umra<span>.booking</span></div>
+        <div class="form-page-h1" id="hotels-page-title">Отели</div>
+      </div>
+    </div>
+  </div>
+  <div class="form-page-progress"></div>
+  <div class="form-body">
+    <div class="hotels-search-summary" id="hotels-search-summary"></div>
+    <div class="hotels-list" id="hotels-list"><!-- заполняется через JS в showHotelsPage() --></div>
+  </div>
+</div><!-- /page-hotels -->
+
+
 <!-- ========== MANAGER PAGE ========== -->
 <div id="page-manager" class="page">
   <div class="manager-page">
@@ -1669,6 +1778,12 @@ const translations = {
     "search.housing_house": "Дом",
     "search.housing_villa": "Вилла",
     "search.housing_hotel": "Отель",
+
+    // HOTELS LIST PAGE (страница со списком отелей после поиска)
+    "hotels_page.title": "Отели",
+    "hotels_page.book_btn": "Забронировать",
+    "hotels_page.empty_text": "В каталоге пока нет отелей для этого города. Напишите менеджеру — подберём вариант вручную.",
+    "hotels_page.wa_hotel": "🏨 Отель",
 
     // CITIES (общие названия — используются в селектах, карточках, FAQ)
     "cities.mecca": "Мекка",
@@ -1901,6 +2016,11 @@ const translations = {
     "search.housing_villa": "Вилла",
     "search.housing_hotel": "Қонақүй",
 
+    "hotels_page.title": "Қонақүйлер",
+    "hotels_page.book_btn": "Брондау",
+    "hotels_page.empty_text": "Бұл қала үшін каталогта әзірге қонақүй жоқ. Менеджерге жазыңыз — қолмен нұсқа таңдап береміз.",
+    "hotels_page.wa_hotel": "🏨 Қонақүй",
+
     "cities.mecca": "Мекке",
     "cities.medina": "Мәдина",
     "cities.jeddah": "Жидда",
@@ -2119,6 +2239,11 @@ const translations = {
     "search.housing_house": "House",
     "search.housing_villa": "Villa",
     "search.housing_hotel": "Hotel",
+
+    "hotels_page.title": "Hotels",
+    "hotels_page.book_btn": "Book now",
+    "hotels_page.empty_text": "There are no hotels in the catalog for this city yet. Message the manager — we'll find an option for you.",
+    "hotels_page.wa_hotel": "🏨 Hotel",
 
     "cities.mecca": "Mecca",
     "cities.medina": "Medina",
@@ -2835,18 +2960,147 @@ function filterPartnersByCity(city, btn) {
   function handleSearch() {
     const citySelect = document.getElementById('search-city');
     const selectedOption = citySelect.options[citySelect.selectedIndex];
+    const cityValue = citySelect.value; // 'mecca' | 'medina' | ... — совпадает с data-city у карточек отелей-партнёров
     const cityKey = selectedOption.getAttribute('data-i18n');
     const cityEn = (cityKey && tr(cityKey)) || selectedOption.text;
+    const cityLabel = (cityKey && t(cityKey)) || selectedOption.text;
     const checkin = getDateIso('checkin');
     const checkout = getDateIso('checkout');
     if (!checkin || !checkout) {
       alert(t('js.search_need_dates'));
       return;
     }
+
+    // Если выбран тип жилья "Отель" — открываем страницу со списком отелей,
+    // а не сразу WhatsApp
+    if (currentHousing === 'hotel') {
+      showHotelsPage({
+        cityValue: cityValue,
+        cityEn: cityEn,
+        cityLabel: cityLabel,
+        checkin: checkin,
+        checkout: checkout,
+        guestCount: guestCount,
+        roomCount: roomCount,
+        dayCount: dayCount
+      });
+      return;
+    }
+
+    // Дом / Вилла — как и раньше, сразу открываем WhatsApp
     // Сообщение менеджеру в WhatsApp — всегда на английском
-    const housingKey = currentHousing === 'villa' ? 'search.housing_villa' : (currentHousing === 'hotel' ? 'search.housing_hotel' : 'search.housing_house');
+    const housingKey = currentHousing === 'villa' ? 'search.housing_villa' : 'search.housing_house';
     const housingLabel = tr(housingKey);
     const msg = `${tr('js.wa_greeting')}\n${tr('js.wa_city')}: ${cityEn}\n${tr('js.wa_housing')}: ${housingLabel}\n${tr('js.wa_checkin')}: ${checkin}\n${tr('js.wa_checkout')}: ${checkout}\n${tr('js.wa_guests')}: ${guestCount}\n${tr('search.rooms')}: ${roomCount}\n${tr('search.days')}: ${dayCount}`;
+    window.open('https://wa.me/77072807888?text=' + encodeURIComponent(msg), '_blank');
+  }
+
+  // ===== СТРАНИЦА СО СПИСКОМ ОТЕЛЕЙ =====
+  // Текущие параметры поиска — нужны кнопке "Забронировать" на каждой карточке отеля
+  let currentHotelSearch = null;
+
+  // Берём реальные отели прямо из секции "Отели-партнёры" (#partnersGrid),
+  // чтобы не дублировать данные и не придумывать несуществующие названия отелей.
+  function getHotelsForCity(cityValue) {
+    const cards = document.querySelectorAll('#partnersGrid .partner-card[data-city="' + cityValue + '"]');
+    const list = [];
+    cards.forEach(function (card) {
+      const iconEl = card.querySelector('.partner-icon');
+      const nameEl = card.querySelector('.partner-name');
+      const arabicEl = card.querySelector('.partner-arabic');
+      const badgeEl = card.querySelector('.partner-badge');
+      const photoUrl = (card.dataset.photo || '').trim();
+      list.push({
+        icon: iconEl ? iconEl.textContent.trim() : '🏨',
+        name: nameEl ? nameEl.textContent.trim() : '',
+        arabic: arabicEl ? arabicEl.textContent.trim() : '',
+        badge: badgeEl ? badgeEl.textContent.trim() : '',
+        photo: photoUrl
+      });
+    });
+    return list;
+  }
+
+  // Как только в карточке отеля (#partnersGrid) появляется ссылка в data-photo —
+  // эта функция подставляет реальное фото вместо иконки-стикера на главной
+  // странице (в разделе "Отели-партнёры"). Ничего делать руками в JS не нужно:
+  // просто впишите ссылку на фото в data-photo="" у нужного отеля в HTML.
+  function applyPartnerPhotos() {
+    document.querySelectorAll('#partnersGrid .partner-card[data-photo]').forEach(function (card) {
+      const url = (card.dataset.photo || '').trim();
+      if (!url || card.querySelector('.partner-photo')) return;
+      const iconEl = card.querySelector('.partner-icon');
+      if (!iconEl) return;
+      const img = document.createElement('img');
+      img.src = url;
+      img.alt = (card.querySelector('.partner-name') || {}).textContent || '';
+      img.className = 'partner-photo';
+      iconEl.replaceWith(img);
+    });
+  }
+  document.addEventListener('DOMContentLoaded', applyPartnerPhotos);
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  function showHotelsPage(params) {
+    currentHotelSearch = params;
+
+    document.getElementById('hotels-page-title').textContent = t('hotels_page.title') + ' — ' + params.cityLabel;
+
+    const summaryEl = document.getElementById('hotels-search-summary');
+    summaryEl.innerHTML =
+      '<span>📍 <b>' + escapeHtml(params.cityLabel) + '</b></span>' +
+      '<span>📅 <b>' + escapeHtml(params.checkin) + '</b> → <b>' + escapeHtml(params.checkout) + '</b></span>' +
+      '<span>👥 <b>' + params.guestCount + ' ' + guestsWord(params.guestCount, currentLang) + '</b></span>';
+
+    const listEl = document.getElementById('hotels-list');
+    const hotels = getHotelsForCity(params.cityValue);
+
+    if (hotels.length === 0) {
+      listEl.innerHTML =
+        '<div class="hotels-empty">' +
+          '<div class="hotels-empty-icon">🕌</div>' +
+          '<div class="hotels-empty-text">' + escapeHtml(t('hotels_page.empty_text')) + '</div>' +
+          '<button class="hotel-book-btn" onclick="bookHotel(\'\')">💬 ' + escapeHtml(t('common.whatsapp_btn')) + '</button>' +
+        '</div>';
+    } else {
+      listEl.innerHTML = hotels.map(function (h) {
+        const mediaHtml = h.photo
+          ? '<img class="hotel-list-photo" src="' + escapeHtml(h.photo) + '" alt="' + escapeHtml(h.name) + '">'
+          : '<div class="hotel-list-icon">' + h.icon + '</div>';
+        return (
+          '<div class="hotel-list-card">' +
+            mediaHtml +
+            '<div class="hotel-list-info">' +
+              '<div class="hotel-list-name">' + escapeHtml(h.name) + '</div>' +
+              (h.arabic ? '<div class="hotel-list-arabic">' + escapeHtml(h.arabic) + '</div>' : '') +
+              (h.badge ? '<div class="hotel-list-badge">' + escapeHtml(h.badge) + '</div>' : '') +
+            '</div>' +
+            '<button class="hotel-book-btn" onclick="bookHotel(\'' + h.name.replace(/'/g, "\\'") + '\')">' + escapeHtml(t('hotels_page.book_btn')) + '</button>' +
+          '</div>'
+        );
+      }).join('');
+    }
+
+    showPage('page-hotels');
+  }
+
+  // Кнопка "Забронировать" на карточке отеля — отправляет номер WhatsApp
+  // с деталями заявки, включая название конкретного отеля
+  function bookHotel(hotelName) {
+    const s = currentHotelSearch || {};
+    let msg = tr('js.wa_greeting') + '\n';
+    if (hotelName) msg += tr('hotels_page.wa_hotel') + ': ' + hotelName + '\n';
+    msg += tr('js.wa_city') + ': ' + (s.cityEn || '') + '\n';
+    msg += tr('js.wa_checkin') + ': ' + (s.checkin || '') + '\n';
+    msg += tr('js.wa_checkout') + ': ' + (s.checkout || '') + '\n';
+    msg += tr('js.wa_guests') + ': ' + (s.guestCount != null ? s.guestCount : '') + '\n';
+    msg += tr('search.rooms') + ': ' + (s.roomCount != null ? s.roomCount : '') + '\n';
+    msg += tr('search.days') + ': ' + (s.dayCount != null ? s.dayCount : '');
     window.open('https://wa.me/77072807888?text=' + encodeURIComponent(msg), '_blank');
   }
 
