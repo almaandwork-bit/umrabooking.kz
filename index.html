@@ -261,7 +261,6 @@
       border: none; padding: 0; margin: 0;
     }
     .search-guests-display { flex: 1; }
-    .search-guests-hint { font-size: 11px; color: var(--text-light); margin-top: 2px; }
     .search-guests-popup {
       display: none;
       background: var(--white); border-radius: 12px;
@@ -853,10 +852,7 @@
       <div class="search-label" data-i18n="search.guests">Гости</div>
       <div class="search-field" id="guests-field" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false" aria-controls="guests-popup">
         <span>👥</span>
-        <div>
-          <div class="search-guests-display" id="guests-display">2 Гостя · 1 Комната · 7 Ночей</div>
-          <div class="search-guests-hint" id="guests-hint" data-i18n="search.tap_hint">Нажмите, чтобы выбрать</div>
-        </div>
+        <div class="search-guests-display" id="guests-display">2 Гостя  1 Комната · 7 Ночей</div>
       </div>
       <div class="search-guests-popup" id="guests-popup">
         <!-- Тип жилья -->
@@ -1192,7 +1188,7 @@
 
     <div class="faq-wa">
       <div class="faq-wa-text" data-i18n="faq.not_found">Не нашли ответ?</div>
-      <a href="https://wa.me/966559301590" class="faq-wa-link" target="_blank">
+      <a href="https://wa.me/77072807888" class="faq-wa-link" target="_blank">
         <span data-i18n="common.whatsapp_btn">💬 Написать в WhatsApp</span>
       </a>
     </div>
@@ -1290,13 +1286,13 @@
           <div class="form-label" data-i18n="review_form.field_city">Город посещения *</div>
           <select class="form-select" id="rv-city" required>
             <option value="" data-i18n="review_form.select_city">— Выберите город —</option>
-            <option data-i18n="cities.mecca">Мекка</option>
-            <option data-i18n="cities.medina">Медина</option>
-            <option data-i18n="cities.jeddah">Джидда</option>
-            <option data-i18n="cities.riyadh">Эр-Рияд</option>
-            <option data-i18n="cities.taif">Таиф</option>
-            <option data-i18n="cities.abha">Абха</option>
-            <option data-i18n="cities.alula">Аль-Ула</option>
+            <option value="Mecca" data-i18n="cities.mecca">Мекка</option>
+            <option value="Medina" data-i18n="cities.medina">Медина</option>
+            <option value="Jeddah" data-i18n="cities.jeddah">Джидда</option>
+            <option value="Riyadh" data-i18n="cities.riyadh">Эр-Рияд</option>
+            <option value="Taif" data-i18n="cities.taif">Таиф</option>
+            <option value="Abha" data-i18n="cities.abha">Абха</option>
+            <option value="AlUla" data-i18n="cities.alula">Аль-Ула</option>
           </select>
         </div>
         <div class="form-group">
@@ -1415,13 +1411,13 @@
             <div class="form-label" data-i18n="form.field_city">Город / Направление *</div>
             <select class="form-select" required>
               <option value="" data-i18n="search.select_city">— Выберите город —</option>
-              <option data-i18n="cities.mecca">Мекка</option>
-              <option data-i18n="cities.medina">Медина</option>
-              <option data-i18n="cities.jeddah">Джидда</option>
-              <option data-i18n="cities.riyadh">Эр-Рияд</option>
-              <option data-i18n="cities.taif">Таиф</option>
-              <option data-i18n="cities.abha">Абха</option>
-              <option data-i18n="cities.alula">Аль-Ула</option>
+              <option value="Mecca" data-i18n="cities.mecca">Мекка</option>
+              <option value="Medina" data-i18n="cities.medina">Медина</option>
+              <option value="Jeddah" data-i18n="cities.jeddah">Джидда</option>
+              <option value="Riyadh" data-i18n="cities.riyadh">Эр-Рияд</option>
+              <option value="Taif" data-i18n="cities.taif">Таиф</option>
+              <option value="Abha" data-i18n="cities.abha">Абха</option>
+              <option value="AlUla" data-i18n="cities.alula">Аль-Ула</option>
             </select>
           </div>
           <div class="form-group">
@@ -1454,10 +1450,10 @@
             <div class="form-label" data-i18n="form.field_food">Питание *</div>
             <select class="form-select" required>
               <option value="" data-i18n="form.select_food">— Выберите тип питания —</option>
-              <option data-i18n="form.food_none">Без питания</option>
-              <option data-i18n="form.food_breakfast">Завтрак включён</option>
-              <option data-i18n="form.food_half_board">Завтрак и ужин</option>
-              <option data-i18n="form.food_full_board">Полный пансион</option>
+              <option value="No meals" data-i18n="form.food_none">Без питания</option>
+              <option value="Breakfast included" data-i18n="form.food_breakfast">Завтрак включён</option>
+              <option value="Breakfast &amp; dinner" data-i18n="form.food_half_board">Завтрак и ужин</option>
+              <option value="Full board" data-i18n="form.food_full_board">Полный пансион</option>
             </select>
           </div>
           <div class="form-group">
@@ -1486,7 +1482,7 @@
         <div class="form-success-icon">✅</div>
         <div class="form-success-title" data-i18n="form.success_title">Заявка отправлена!</div>
         <div class="form-success-text" data-i18n="form.success_text">Менеджер свяжется с вами в WhatsApp в течение 4 часов. Также ждите письмо на email.</div>
-        <a href="https://wa.me/966559301590" class="form-success-wa" target="_blank" data-i18n="common.whatsapp_btn">💬 Написать в WhatsApp</a>
+        <a href="https://wa.me/77072807888" class="form-success-wa" target="_blank" data-i18n="common.whatsapp_btn">💬 Написать в WhatsApp</a>
         <br><br>
         <button onclick="showPage('page-main')" style="background:none;border:none;color:var(--blue);cursor:pointer;font-size:14px;" data-i18n="common.back_home">← Вернуться на главную</button>
       </div>
@@ -1528,13 +1524,13 @@
             <div class="form-label" data-i18n="form.field_city">Город / Направление *</div>
             <select class="form-select" required>
               <option value="" data-i18n="search.select_city">— Выберите город —</option>
-              <option data-i18n="cities.mecca">Мекка</option>
-              <option data-i18n="cities.medina">Медина</option>
-              <option data-i18n="cities.jeddah">Джидда</option>
-              <option data-i18n="cities.riyadh">Эр-Рияд</option>
-              <option data-i18n="cities.taif">Таиф</option>
-              <option data-i18n="cities.abha">Абха</option>
-              <option data-i18n="cities.alula">Аль-Ула</option>
+              <option value="Mecca" data-i18n="cities.mecca">Мекка</option>
+              <option value="Medina" data-i18n="cities.medina">Медина</option>
+              <option value="Jeddah" data-i18n="cities.jeddah">Джидда</option>
+              <option value="Riyadh" data-i18n="cities.riyadh">Эр-Рияд</option>
+              <option value="Taif" data-i18n="cities.taif">Таиф</option>
+              <option value="Abha" data-i18n="cities.abha">Абха</option>
+              <option value="AlUla" data-i18n="cities.alula">Аль-Ула</option>
             </select>
           </div>
           <div class="form-group">
@@ -1567,10 +1563,10 @@
             <div class="form-label" data-i18n="form.field_food">Питание *</div>
             <select class="form-select" required>
               <option value="" data-i18n="form.select_food">— Выберите тип питания —</option>
-              <option data-i18n="form.food_none">Без питания</option>
-              <option data-i18n="form.food_breakfast">Завтрак включён</option>
-              <option data-i18n="form.food_half_board">Завтрак и ужин</option>
-              <option data-i18n="form.food_full_board">Полный пансион</option>
+              <option value="No meals" data-i18n="form.food_none">Без питания</option>
+              <option value="Breakfast included" data-i18n="form.food_breakfast">Завтрак включён</option>
+              <option value="Breakfast &amp; dinner" data-i18n="form.food_half_board">Завтрак и ужин</option>
+              <option value="Full board" data-i18n="form.food_full_board">Полный пансион</option>
             </select>
           </div>
           <div class="form-group">
@@ -1599,7 +1595,7 @@
         <div class="form-success-icon">✅</div>
         <div class="form-success-title" data-i18n="form.success_title">Заявка отправлена!</div>
         <div class="form-success-text" data-i18n="form.success_text">Менеджер свяжется с вами в WhatsApp в течение 4 часов. Также ждите письмо на email.</div>
-        <a href="https://wa.me/966559301590" class="form-success-wa" target="_blank" data-i18n="common.whatsapp_btn">💬 Написать в WhatsApp</a>
+        <a href="https://wa.me/77072807888" class="form-success-wa" target="_blank" data-i18n="common.whatsapp_btn">💬 Написать в WhatsApp</a>
         <br><br>
         <button onclick="showPage('page-main')" style="background:none;border:none;color:var(--blue);cursor:pointer;font-size:14px;" data-i18n="common.back_home">← Вернуться на главную</button>
       </div>
@@ -1673,7 +1669,6 @@ const translations = {
     "search.housing_house": "Дом",
     "search.housing_villa": "Вилла",
     "search.housing_hotel": "Отель",
-    "search.tap_hint": "Нажмите, чтобы выбрать",
 
     // CITIES (общие названия — используются в селектах, карточках, FAQ)
     "cities.mecca": "Мекка",
@@ -1905,7 +1900,6 @@ const translations = {
     "search.housing_house": "Үй",
     "search.housing_villa": "Вилла",
     "search.housing_hotel": "Қонақүй",
-    "search.tap_hint": "Таңдау үшін басыңыз",
 
     "cities.mecca": "Мекке",
     "cities.medina": "Мәдина",
@@ -2125,7 +2119,6 @@ const translations = {
     "search.housing_house": "House",
     "search.housing_villa": "Villa",
     "search.housing_hotel": "Hotel",
-    "search.tap_hint": "Tap to select",
 
     "cities.mecca": "Mecca",
     "cities.medina": "Medina",
@@ -2422,10 +2415,10 @@ function filterPartnersByCity(city, btn) {
 /* eslint-env browser */
 /* global document, window, alert, t, currentLang, guestsWord, nightsWord, translations */
 
-  // Сообщения менеджеру в WhatsApp всегда на русском, независимо от языка
-  // интерфейса посетителя — менеджеры читают по-русски.
+  // Сообщения менеджеру в WhatsApp всегда на английском, независимо от языка
+  // интерфейса посетителя.
   function tr(key) {
-    return translations.ru[key] || key;
+    return translations.en[key] || key;
   }
 
   // PAGE NAVIGATION
@@ -2479,7 +2472,6 @@ function filterPartnersByCity(city, btn) {
     }
 
     if (st.seg === 'month' && st.buf) {
-      // Вторая цифра месяца ещё не введена — показываем сами цифры
       monthEl.textContent = pad2(parseInt(st.buf, 10));
       monthEl.classList.remove('placeholder');
     } else if (st.month !== null) {
@@ -2844,18 +2836,18 @@ function filterPartnersByCity(city, btn) {
     const citySelect = document.getElementById('search-city');
     const selectedOption = citySelect.options[citySelect.selectedIndex];
     const cityKey = selectedOption.getAttribute('data-i18n');
-    const cityRu = (cityKey && tr(cityKey)) || selectedOption.text;
+    const cityEn = (cityKey && tr(cityKey)) || selectedOption.text;
     const checkin = getDateIso('checkin');
     const checkout = getDateIso('checkout');
     if (!checkin || !checkout) {
       alert(t('js.search_need_dates'));
       return;
     }
-    // Сообщение менеджеру в WhatsApp — всегда на русском
+    // Сообщение менеджеру в WhatsApp — всегда на английском
     const housingKey = currentHousing === 'villa' ? 'search.housing_villa' : (currentHousing === 'hotel' ? 'search.housing_hotel' : 'search.housing_house');
     const housingLabel = tr(housingKey);
-    const msg = `${tr('js.wa_greeting')}\n${tr('js.wa_city')}: ${cityRu}\n${tr('js.wa_housing')}: ${housingLabel}\n${tr('js.wa_checkin')}: ${checkin}\n${tr('js.wa_checkout')}: ${checkout}\n${tr('js.wa_guests')}: ${guestCount}\n${tr('search.rooms')}: ${roomCount}\n${tr('search.days')}: ${dayCount}`;
-    window.open('https://wa.me/966559301590?text=' + encodeURIComponent(msg), '_blank');
+    const msg = `${tr('js.wa_greeting')}\n${tr('js.wa_city')}: ${cityEn}\n${tr('js.wa_housing')}: ${housingLabel}\n${tr('js.wa_checkin')}: ${checkin}\n${tr('js.wa_checkout')}: ${checkout}\n${tr('js.wa_guests')}: ${guestCount}\n${tr('search.rooms')}: ${roomCount}\n${tr('search.days')}: ${dayCount}`;
+    window.open('https://wa.me/77072807888?text=' + encodeURIComponent(msg), '_blank');
   }
 
   // FAQ
@@ -2872,8 +2864,8 @@ function filterPartnersByCity(city, btn) {
       const input = inputs[i];
       if (input && input.value) {
         const key = label.getAttribute('data-i18n');
-        const ruLabel = (key && tr(key)) || label.textContent;
-        msg += `*${ruLabel.replace(' *', '')}:* ${input.value}\n`;
+        const fieldLabel = (key && tr(key)) || label.textContent;
+        msg += `*${fieldLabel.replace(' *', '')}:* ${input.value}\n`;
       }
     });
     msg += `\n${tr('js.wa_sent_from')}`;
@@ -2896,7 +2888,7 @@ function filterPartnersByCity(city, btn) {
 
     // Open WhatsApp
     setTimeout(() => {
-      window.open('https://wa.me/966559301590?text=' + encodeURIComponent(msg), '_blank');
+      window.open('https://wa.me/77072807888?text=' + encodeURIComponent(msg), '_blank');
     }, 800);
   }
 
@@ -2914,7 +2906,7 @@ function filterPartnersByCity(city, btn) {
     document.getElementById('individual-success').style.display = 'block';
 
     setTimeout(() => {
-      window.open('https://wa.me/966559301590?text=' + encodeURIComponent(msg), '_blank');
+      window.open('https://wa.me/77072807888?text=' + encodeURIComponent(msg), '_blank');
     }, 800);
   }
 
@@ -2989,7 +2981,7 @@ function filterPartnersByCity(city, btn) {
     btn.disabled = true;
     errEl.style.display = 'none';
 
-    // Build Russian WhatsApp message (always RU for manager)
+    // Build English WhatsApp message (always EN for manager)
     var stars = function(n) { return '★'.repeat(n) + '☆'.repeat(5 - n); };
     var msg = [
       tr('review_form.wa_header'),
@@ -3011,7 +3003,7 @@ function filterPartnersByCity(city, btn) {
     if (agree) msg.push('', tr('review_form.wa_consent'));
     msg.push('', tr('js.wa_sent_from'));
 
-    window.open('https://wa.me/966559301590?text=' + encodeURIComponent(msg.join('\n')), '_blank');
+    window.open('https://wa.me/77072807888?text=' + encodeURIComponent(msg.join('\n')), '_blank');
 
     // Show success screen
     document.getElementById('review-modal-form').style.display = 'none';
